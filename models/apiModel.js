@@ -1,4 +1,4 @@
-let db = require('../libs/mongoose');
+let db = require('../libs/mongodb');
 const Schema = require('mongoose').Schema;
 
 var apiSchema = new Schema({
@@ -15,6 +15,6 @@ var apiSchema = new Schema({
     }
 );
 
-var apiModel = db.mongoose.model('api', apiSchema);
+var apiModel = db.model('api', apiSchema);
 
 module.exports = apiModel;

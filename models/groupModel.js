@@ -1,4 +1,4 @@
-let db = require('../libs/mongoose');
+let db = require('../libs/mongodb');
 const Schema = require('mongoose').Schema;
 
 var groupSchema = new Schema({
@@ -10,6 +10,6 @@ var groupSchema = new Schema({
     {collection: 'group'}
 );
 
-var groupModel = db.mongoose.model('group', groupSchema);
+var groupModel = db.model('group', groupSchema);
 
 module.exports = groupModel;
