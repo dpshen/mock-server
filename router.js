@@ -1,9 +1,10 @@
-const xtpl = require('xtpl/lib/koa');
 const router = require('koa-router')();
 
-router.get('/view-test', async ()=>{
-    console.log("==>");
-    await this.render('index',{"title":"xtemplate demo", name:"dpshen"});
-});
+const setApi = require('./api/workspace').setApi;
+const mock = require('./api/mockData').mock;
+
+router.get('/setApi', setApi);
+
+router.get('/mock', mock);
 
 module.exports = router;
