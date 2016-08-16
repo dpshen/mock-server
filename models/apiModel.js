@@ -17,4 +17,10 @@ var apiSchema = new Schema({
 
 var apiModel = db.model('api', apiSchema);
 
-module.exports = apiModel;
+function hasApi(path, name, ){
+    return apiModel.findOne({path:path, name:name})
+}
+
+module.exports = {
+    hasApi:hasApi
+};

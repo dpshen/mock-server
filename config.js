@@ -6,7 +6,7 @@ fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
 var log4jsconf = {
     appenders: [
-        {type: "console"},
+        // {type: "console"},
         {
             type: "dateFile",
             filename: logDirectory,
