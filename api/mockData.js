@@ -1,10 +1,10 @@
 
 
 async function mock(ctx, next) {
-    ctx.body = "mock todo.";
+    ctx.logger.info(ctx.path);
     await next();
 }
 
 module.exports = {
-    mock: mock
+    mock
 }

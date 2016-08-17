@@ -16,13 +16,23 @@ app.use(convert(bodyparser));
 app.use(convert(json()));
 
 app.use(async (ctx, next) => {
-    ctx.logger = logger;
-    ctx.result = new WebResult(ctx.request);
     const start = new Date();
     await next();
     const ms = new Date() - start;
-    ctx.logger.info(`${ctx.method} ${ctx.url} - ${ms}ms`);
+    ctx.logger.info(`${ctx.method} ${ctx.url} - ${ms}ms  ${ctx.result.msg}`);
 });
+
+app.use(async (ctx, next)=>{
+    ctx.logger = logger;
+    ctx.result = new WebResult(ctx.request);
+    await next();
+    ctx.set('Access-Control-Allow-Origin', ctx.request.headers.origin || '');
+    ctx.set('Access-Control-Allow-Credentials', true);
+    ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+
+    ctx.set('Content-Type','application/javascript;charset=UTF-8');
+    ctx.body = ctx.result.toString();
+})
 
 router.allowedMethods();
 app.use(router.routes());
@@ -33,8 +43,7 @@ app.use(require('koa-static')("./build", {
 }));
 
 app.on('error', function(err, ctx){
-    console.log(err)
-    logger.error('server error', err, ctx);
+    logger.error(`${ctx.method} ${ctx.url}`, err);
 });
 
 module.exports = app;
