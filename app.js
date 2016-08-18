@@ -1,10 +1,7 @@
 const Koa = require('koa');
 const convert = require('koa-convert');
 const json = require('koa-json');
-
-const resolve = require('path').resolve;
-const assert = require('assert');
-const send = require('koa-send');
+const staticServer = require('./middleware/static');
 
 const bodyparser = require('koa-bodyparser')({
     "formLimit": "5mb",
@@ -50,7 +47,7 @@ app.use(router.routes());
 //     index: "index.html"
 // }));
 
-app.use(require('./middleware/static')("./view/build",{
+app.use(staticServer("./view/build",{
     index: "index.html"
 }));
 
