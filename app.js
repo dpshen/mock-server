@@ -31,7 +31,9 @@ app.use(async (ctx, next)=>{
     ctx.set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
 
     ctx.set('Content-Type','application/javascript;charset=UTF-8');
-    ctx.body = ctx.result.toString();
+    if (!ctx.body){
+        ctx.body = ctx.result.toString();
+    }
 })
 
 router.allowedMethods();

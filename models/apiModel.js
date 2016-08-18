@@ -73,11 +73,17 @@ function updateApi({_id, path, name, template}) {
     return apiModel.update({_id}, {$set: {path, name, template, modifyTime}},detailView)
 }
 
+// 更新接口地址
+function queryApiByPath(path) {
+    return apiModel.find({path},detailView)
+}
+
 module.exports = {
     getApiList,
     getPathCount,
     getNameCount,
     addApi,
     getApi,
-    updateApi
+    updateApi,
+    queryApiByPath
 };
