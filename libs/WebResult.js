@@ -13,20 +13,25 @@ WebResult.prototype = {
         this.msg = msg
     },
     setResult: function (result) {
-        this.data = result || {}
+        this.data = result || {};
+        this.code = 200;
     },
 
-    toJSON: function () {
-        return {
-            success: (this.code == 0),
-            code: this.code,
-            msg: this.msg,
-            data: this.data,
-            returnTime: new Date()
+    toJSON: function (justData) {
+        if (justData){
+            return this.data
+        } else {
+            return {
+                success: (this.code == 200),
+                code: this.code,
+                msg: this.msg,
+                data: this.data,
+                returnTime: new Date()
+            }
         }
     },
-    toString: function () {
-        var resultString = JSON.stringify(this.toJSON());
+    toString: function (justData) {
+        var resultString = JSON.stringify(this.toJSON(justData));
         
         return this.jsonCallbackName ? this.jsonCallbackName + "(" + resultString + ")" : resultString;
 

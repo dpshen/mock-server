@@ -8,7 +8,7 @@ async function addGroup(ctx, next) {
 
     if (!(form && form.groupPath && form.groupName)) {
         // 检查参数
-        ctx.result.set("100", "缺少参数");
+        ctx.result.set(100, "缺少参数");
         return
     }
 
@@ -16,7 +16,7 @@ async function addGroup(ctx, next) {
     ret = await groupModel.getPathCount(form);
     ctx.logger.trace("groupModel.getPathCount", ret);
     if (ret > 0) {
-        ctx.result.set("201", `Group路径${form.groupPath}已存在`);
+        ctx.result.set(101, `Group路径${form.groupPath}已存在`);
         return;
     }
 
@@ -24,7 +24,7 @@ async function addGroup(ctx, next) {
     ret = await groupModel.getNameCount(form);
     ctx.logger.trace("groupModel.getNameCount", ret);
     if (ret > 0) {
-        ctx.result.set("202", `Group名称${form.groupName}已存在`);
+        ctx.result.set(102, `Group名称${form.groupName}已存在`);
         return;
     }
 

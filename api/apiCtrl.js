@@ -24,7 +24,7 @@ async function addApi(ctx, next) {
     ret = await apiModel.getPathCount(form);
     ctx.logger.trace("apiModel.hasPath", ret);
     if (ret > 0) {
-        ctx.result.set(201, `已存在接口地址:${form.path}`);
+        ctx.result.set(102, `已存在接口地址:${form.path}`);
         return;
     }
 
@@ -32,7 +32,7 @@ async function addApi(ctx, next) {
     ret = await apiModel.getNameCount(form);
     ctx.logger.trace("apiModel.hasName", ret);
     if (ret > 0) {
-        ctx.result.set(202, `已存在接口名:${form.name}`);
+        ctx.result.set(103, `已存在接口名:${form.name}`);
         return;
     }
 
@@ -65,7 +65,7 @@ async function updateApi(ctx, next) {
     let api = await apiModel.getApi(form);
     ctx.logger.trace("apiModel.getApi", api);
     if (!api) {
-        ctx.result.set(201, '接口不存在');
+        ctx.result.set(104, '接口不存在');
         return;
     }
 
@@ -73,7 +73,7 @@ async function updateApi(ctx, next) {
     ret = await apiModel.getPathCount(form);
     ctx.logger.trace("apiModel.hasPath", ret);
     if (api.path != form.path && ret > 0 ) {
-        ctx.result.set(201, `已存在接口地址:${form.path}`);
+        ctx.result.set(102, `已存在接口地址:${form.path}`);
         return;
     }
 
@@ -81,7 +81,7 @@ async function updateApi(ctx, next) {
     ret = await apiModel.getNameCount(form);
     ctx.logger.trace("apiModel.hasName", ret);
     if (api.name != form.name && ret > 1) {
-        ctx.result.set(202, `已存在接口名:${form.name}`);
+        ctx.result.set(103, `已存在接口名:${form.name}`);
         return;
     }
 
