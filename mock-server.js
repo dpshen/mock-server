@@ -17,7 +17,7 @@ var WebpackDevServer = require("webpack-dev-server")
 
 var config = require("./webpack.config.js");
 
-var port = "8080";
+var port = "8081";
 var hosts = "127.0.0.1";
 // var hosts = "192.168.31.187";
 
@@ -49,4 +49,4 @@ var server = new WebpackDevServer(compiler, {
 });
 server.listen(port);
 
-console.log(`Open http://${hosts}:${port}/index.html`)
+console.log(`Open http://${hosts}:${port}`)

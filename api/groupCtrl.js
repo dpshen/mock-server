@@ -46,11 +46,11 @@ async function getGroupList(ctx, next) {
     let ret = await groupModel.getGroupList(),
         rst = [];
 
-    ret.map(async (group)=>{
+    for (let group of ret) {
         group = group.toObject();
         group.apiList = await apiModel.getApiList({groupId:group._id});
         rst.push(group);
-    });
+    }
     ctx.result.setResult(rst);
 
     await next();

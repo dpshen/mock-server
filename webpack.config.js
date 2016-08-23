@@ -61,7 +61,7 @@ var config = {
      module:{
      	loaders: [
 		    {
-		      test: /\.js$/,
+		      test: /(\.js$)|(\.jsx)/,
 		      /**
 		      	excule必须写一个目录不然会发出一个警告
 		      */
@@ -76,7 +76,7 @@ var config = {
 			    }
 		    },
 		    {
-			  test: /\.less$/,
+			  test: /(\.less$)|(\.css$)/,
 			  /**
 			  	css-loader less-loader autoprefixer
 				extractLESS.extract 独立打包 css文件
@@ -84,7 +84,7 @@ var config = {
 			  */
 			  loader:extractLESS.extract(['css','less','autoprefixer'])
 			}
-			
+
 		]
      },
      plugins: [
