@@ -65,8 +65,7 @@ export default class IndexScreen extends Component {
         return (
             <div className="ant-layout-aside">
                 <aside className="ant-layout-sider">
-                    <div className="ant-layout-logo">FBI
-                        <small>MOCK</small>
+                    <div className="ant-layout-logo">FBI <small>mock</small>
                     </div>
                     <Menu mode="inline" onSelect={this.onSelect.bind(this)} onClick={this.onSelect.bind(this)}
                           theme="dark" selectedKeys={selectedKeys} >

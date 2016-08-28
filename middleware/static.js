@@ -32,11 +32,9 @@ function serve(root, opts) {
 
     if (!opts.defer) {
         return function serve(ctx, next) {
-            ctx.logger.debug("===>1")
             if (ctx.result.code != 0){
                 return next()
             }
-            ctx.logger.debug("===>2")
             let path = ctx.path;
             if (!path.endsWith('.js') && !path.endsWith('.css')){
                 path = '/'
