@@ -20,7 +20,8 @@ var distPath = "./view/build";
 var daily_publicPath = "http://daily.yuantutech.com";
 var dist_publicPath = "http://s.yuantutech.com";
 //本地开发环境通常不需要配置
-var dev_publicPath = null;
+// var dev_publicPath = null;
+var dev_publicPath = "/";
 
 var dev_environment = environment.indexOf("dev"); // 本地开发环境 webpack dev
 var daily_environment = environment.indexOf("daily"); // daily环境 webpack daily

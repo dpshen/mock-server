@@ -6,6 +6,6 @@ export default class ApiTemplate extends Component {
     }
 
     render(){
-        return null
+        return <h1>ApiTemplate</h1>
     }
 }

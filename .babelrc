@@ -5,6 +5,6 @@
   ],
   "plugins": [
     "transform-async-to-generator",
-    ["antd", [{ "libraryName": "antd", "style": "css" }]]
+    ["antd", [{ "libraryName": "antd", "style": "less" }]]
   ]
 }

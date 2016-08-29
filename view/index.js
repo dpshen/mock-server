@@ -8,11 +8,14 @@ import configureStore from './store/configureStore'
 
 import IndexScreen from './containers/IndexScreen'
 import GroupList from './containers/GroupList'
+import AddGroup from './containers/AddGroup'
 import ApiList from './containers/ApiList'
+import AddApi from './containers/AddApi'
 import ApiTemplate from './containers/ApiTemplate'
 import ApiMockData from './containers/ApiMockData'
 
 import 'antd/dist/antd.less'
+import './css/common.less'
 
 const store = configureStore();
 const history = syncHistoryWithStore(browserHistory, store);
@@ -34,13 +37,15 @@ export default class App extends React.Component {
                     <Route path="/" component={IndexScreen}>
                         <IndexRedirect to="groupList"/>
                         <Route path="groupList" component={GroupList}/>
+                        <Route path="addGroup" component={AddGroup}/>
                         <Route path=":group">
-                            <IndexRedirect to=":group/apiList"/>
-                            <Route path=":group/apiList" component={ApiList}/>
-                            <Route path=":group/:api" >
-                                <IndexRedirect to=":group/:api/Template"/>
-                                <Route path=":group/:api/Template" component={ApiTemplate}/>
-                                <Route path=":group/:api/mockData" component={ApiMockData}/>
+                            <IndexRedirect to="apiList"/>
+                            <Route path="apiList" component={ApiList}/>
+                            <Route path="addApi" component={AddApi}/>
+                            <Route path=":api" >
+                                <IndexRedirect to="template"/>
+                                <Route path="template" component={ApiTemplate}/>
+                                <Route path="mockData" component={ApiMockData}/>
                             </Route>
                         </Route>
                     </Route>

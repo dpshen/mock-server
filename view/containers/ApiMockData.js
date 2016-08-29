@@ -6,6 +6,6 @@ export default class ApiMockData extends Component {
     }
 
     render(){
-        return null
+        return <h1>ApiMockData</h1>
     }
 }

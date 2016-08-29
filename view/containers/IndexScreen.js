@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Menu, Breadcrumb, Icon} from 'antd';
+import {Link } from 'react-router'
 
 import './IndexScreen.less'
 
@@ -43,13 +44,14 @@ export default class IndexScreen extends Component {
         }
     }
 
-    onSelect(item, key, selectedKeys) {
-        console.log(key, selectedKeys)
+    onSelect(item) {
         let href = item.item.props["data-href"];
-
-        location.href = href;
+        this.props.history.replace(href);
     }
 
+    onSubMenuClick(eventKey ){
+        this.props.history.replace(`/${eventKey}`);
+    }
 
     render() {
         let params = this.props.params;
@@ -65,13 +67,13 @@ export default class IndexScreen extends Component {
         return (
             <div className="ant-layout-aside">
                 <aside className="ant-layout-sider">
-                    <div className="ant-layout-logo">FBI <small>mock</small>
-                    </div>
+                    <Link className="ant-layout-logo" to="/">FBI <small>mock</small></Link>
                     <Menu mode="inline" onSelect={this.onSelect.bind(this)} onClick={this.onSelect.bind(this)}
                           theme="dark" selectedKeys={selectedKeys} >
 
                         {groupList.map(group=> {
                             return <Menu.SubMenu key={group._id} data-href={`/${group._id}/apiList`}
+                                                 onTitleClick={this.onSubMenuClick.bind(this)}
                                             title={<span><Icon type="edit" />{group.groupName}</span>}>
                                 {
                                     group.apiList.map((api)=> {
