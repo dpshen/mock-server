@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux'
 import {Menu, Breadcrumb, Icon} from 'antd';
-import {Link } from 'react-router'
+import {Link} from 'react-router'
+
+import {fetchGroupList} from '../actions'
 
 import './IndexScreen.less'
 
-export default class IndexScreen extends Component {
+class IndexScreen extends Component {
     constructor(props) {
         super(props);
 
@@ -44,21 +47,26 @@ export default class IndexScreen extends Component {
         }
     }
 
+    componentWillMount() {
+        this.props.fetchGroupList();
+    }
+
     onSelect(item) {
         let href = item.item.props["data-href"];
         this.props.history.replace(href);
     }
 
-    onSubMenuClick(eventKey ){
-        this.props.history.replace(`/${eventKey}`);
+    onSubMenuClick(eventKey) {
+        console.log(eventKey)
+        this.props.history.replace(`/${eventKey.key}`);
     }
 
     render() {
         let params = this.props.params;
         let selectedKeys = [];
-        if (params.api){
+        if (params.api) {
             selectedKeys = [params.group, params.api]
-        } else if (params.group){
+        } else if (params.group) {
             selectedKeys = [params.group]
         }
 
@@ -67,14 +75,16 @@ export default class IndexScreen extends Component {
         return (
             <div className="ant-layout-aside">
                 <aside className="ant-layout-sider">
-                    <Link className="ant-layout-logo" to="/">FBI <small>mock</small></Link>
+                    <Link className="ant-layout-logo" to="/">FBI
+                        <small>mock</small>
+                    </Link>
                     <Menu mode="inline" onSelect={this.onSelect.bind(this)} onClick={this.onSelect.bind(this)}
-                          theme="dark" selectedKeys={selectedKeys} >
+                          theme="dark" selectedKeys={selectedKeys}>
 
                         {groupList.map(group=> {
                             return <Menu.SubMenu key={group._id} data-href={`/${group._id}/apiList`}
                                                  onTitleClick={this.onSubMenuClick.bind(this)}
-                                            title={<span><Icon type="edit" />{group.groupName}</span>}>
+                                                 title={<span><Icon type="edit"/>{group.groupName}</span>}>
                                 {
                                     group.apiList.map((api)=> {
                                         return <Menu.Item key={api._id}
@@ -97,3 +107,22 @@ export default class IndexScreen extends Component {
         )
     }
 }
+
+function mapStateToProps(state, ownProps) {
+    // We need to lower case the login/name due to the way GitHub's API behaves.
+    // Have a look at ../middleware/api.js for more details.
+
+    console.log(state, ownProps)
+
+    const {
+        entities: {groupList}
+    } = state;
+
+    return {
+        groups
+    }
+}
+
+export default connect(mapStateToProps, {
+    fetchGroupList
+})(IndexScreen)

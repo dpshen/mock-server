@@ -1,5 +1,6 @@
 const apiModel = require('../models/apiModel');
 const objectIdRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+const Mock = require('mockjs');
 
 
 async function addApi(ctx, next) {
@@ -108,8 +109,34 @@ async function getApiList(ctx, next) {
     await next();
 }
 
+async function getApi(ctx, next) {
+    let query = ctx.request.query;
+
+    if (!objectIdRegExp.test(query._id)){
+        ctx.result.set(100, "缺少参数");
+        return null;
+    }
+
+    let api = await apiModel.getApi(query);
+    ctx.logger.trace("apiModel.getApi", api);
+    if (!api) {
+        ctx.result.set(104, '接口不存在');
+        return null;
+    }
+
+
+    api = api.toObject();
+    let template = JSON.parse(api.template || "{}");
+    api.mockData = Mock.mock(template);
+
+    ctx.result.setResult(api);
+
+    await next();
+}
+
 module.exports = {
     addApi,
     updateApi,
+    getApi,
     getApiList
 }

@@ -1,138 +1,88 @@
-import { CALL_API, Schemas } from '../libs/api'
+import {CALL_API } from '../libs/api'
+import {Schemas} from '../libs/schema'
 
-export const GROUP_LIST = 'USER_REQUEST'
-export const USER_SUCCESS = 'USER_SUCCESS'
-export const USER_FAILURE = 'USER_FAILURE'
+export const GET_GROUP_LIST = 'GET_GROUP_LIST'
+export const GET_GROUP_LIST_SUCCESS = 'GET_GROUP_LIST_SUCCESSS'
+export const GET_GROUP_LIST_FAILURE = 'GET_GROUP_LIST_FAILURE'
 
 // Fetches a single user from Github API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchUser(login) {
-  return {
-    [CALL_API]: {
-      types: [ USER_REQUEST, USER_SUCCESS, USER_FAILURE ],
-      endpoint: `users/${login}`,
-      schema: Schemas.USER
+export function fetchGroupList() {
+    return {
+        [CALL_API]: {
+            types: [GET_GROUP_LIST, GET_GROUP_LIST_SUCCESS, GET_GROUP_LIST_FAILURE],
+            endpoint: `/getGroupList`,
+            schema: Schemas.GROUP_ARRAY
+        }
     }
-  }
 }
 
-// Fetches a single user from Github API unless it is cached.
-// Relies on Redux Thunk middleware.
-export function loadUser(login, requiredFields = []) {
-  return (dispatch, getState) => {
-    const user = getState().entities.users[login]
-    if (user && requiredFields.every(key => user.hasOwnProperty(key))) {
-      return null
-    }
 
-    return dispatch(fetchUser(login))
-  }
-}
-
-export const REPO_REQUEST = 'REPO_REQUEST'
-export const REPO_SUCCESS = 'REPO_SUCCESS'
-export const REPO_FAILURE = 'REPO_FAILURE'
+export const GET_GROUP = 'GET_GROUP'
+export const GET_GROUP_SUCCESS = 'GET_GROUP_SUCCESSS'
+export const GET_GROUP_FAILURE = 'GET_GROUP_FAILUREE'
 
 // Fetches a single repository from Github API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchRepo(fullName) {
-  return {
-    [CALL_API]: {
-      types: [ REPO_REQUEST, REPO_SUCCESS, REPO_FAILURE ],
-      endpoint: `repos/${fullName}`,
-      schema: Schemas.REPO
+export function fetchGroup(groupId) {
+    return {
+        [CALL_API]: {
+            types: [GET_GROUP, GET_GROUP_SUCCESS, GET_GROUP_FAILURE],
+            endpoint: `getGroup?_id=${groupId}`,
+            schema: Schemas.GROUP
+        }
     }
-  }
 }
 
-// Fetches a single repository from Github API unless it is cached.
-// Relies on Redux Thunk middleware.
-export function loadRepo(fullName, requiredFields = []) {
-  return (dispatch, getState) => {
-    const repo = getState().entities.repos[fullName]
-    if (repo && requiredFields.every(key => repo.hasOwnProperty(key))) {
-      return null
-    }
+export const GET_API_LIST = 'GET_API_LIST'
+export const GET_API_LIST_SUCCESS = 'GET_API_LIST_SUCCESSS'
+export const GET_API_LIST_FAILURE = 'GET_API_LIST_FAILUREE'
 
-    return dispatch(fetchRepo(fullName))
-  }
-}
-
-export const STARRED_REQUEST = 'STARRED_REQUEST'
-export const STARRED_SUCCESS = 'STARRED_SUCCESS'
-export const STARRED_FAILURE = 'STARRED_FAILURE'
-
-// Fetches a page of starred repos by a particular user.
+// Fetches a single repository from Github API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchStarred(login, nextPageUrl) {
-  return {
-    login,
-    [CALL_API]: {
-      types: [ STARRED_REQUEST, STARRED_SUCCESS, STARRED_FAILURE ],
-      endpoint: nextPageUrl,
-      schema: Schemas.REPO_ARRAY
+export function fetchApiList(groupId) {
+    return {
+        [CALL_API]: {
+            types: [GET_API_LIST, GET_API_LIST_SUCCESS, GET_API_LIST_FAILURE],
+            endpoint: `getApiList?groupId=${groupId}`,
+            schema: Schemas.GROUP
+        }
     }
-  }
 }
 
-// Fetches a page of starred repos by a particular user.
-// Bails out if page is cached and user didn’t specifically request next page.
-// Relies on Redux Thunk middleware.
-export function loadStarred(login, nextPage) {
-  return (dispatch, getState) => {
-    const {
-      nextPageUrl = `users/${login}/starred`,
-      pageCount = 0
-    } = getState().pagination.starredByUser[login] || {}
+export const GET_API = 'GET_API'
+export const GET_API_SUCCESS = 'GET_API_SUCCESSS'
+export const GET_API_FAILURE = 'GET_API_FAILUREE'
 
-    if (pageCount > 0 && !nextPage) {
-      return null
-    }
-
-    return dispatch(fetchStarred(login, nextPageUrl))
-  }
-}
-
-export const STARGAZERS_REQUEST = 'STARGAZERS_REQUEST'
-export const STARGAZERS_SUCCESS = 'STARGAZERS_SUCCESS'
-export const STARGAZERS_FAILURE = 'STARGAZERS_FAILURE'
-
-// Fetches a page of stargazers for a particular repo.
+// Fetches a single repository from Github API.
 // Relies on the custom API middleware defined in ../middleware/api.js.
-function fetchStargazers(fullName, nextPageUrl) {
-  return {
-    fullName,
-    [CALL_API]: {
-      types: [ STARGAZERS_REQUEST, STARGAZERS_SUCCESS, STARGAZERS_FAILURE ],
-      endpoint: nextPageUrl,
-      schema: Schemas.USER_ARRAY
+export function fetchApi(apiId) {
+    return {
+        [CALL_API]: {
+            types: [GET_API, GET_API_SUCCESS, GET_API_FAILURE],
+            endpoint: `getApi?_id=${apiId}`,
+            schema: Schemas.GROUP
+        }
     }
-  }
 }
 
-// Fetches a page of stargazers for a particular repo.
-// Bails out if page is cached and user didn’t specifically request next page.
-// Relies on Redux Thunk middleware.
-export function loadStargazers(fullName, nextPage) {
-  return (dispatch, getState) => {
-    const {
-      nextPageUrl = `repos/${fullName}/stargazers`,
-      pageCount = 0
-    } = getState().pagination.stargazersByRepo[fullName] || {}
+export const ADD_API = 'ADD_API'
+export const ADD_API_SUCCESS = 'ADD_API_SUCCESSS'
+export const ADD_API_FAILURE = 'ADD_API_FAILUREE'
 
-    if (pageCount > 0 && !nextPage) {
-      return null
+// Fetches a single repository from Github API.
+// Relies on the custom API middleware defined in ../middleware/api.js.
+export function postApi(formData) {
+    return {
+        [CALL_API]: {
+            types: [ADD_API, ADD_API_SUCCESS, ADD_API_FAILURE],
+            endpoint: `getApi`,
+            schema: Schemas.GROUP,
+            option: {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: formData
+            }
+        }
     }
-
-    return dispatch(fetchStargazers(fullName, nextPageUrl))
-  }
-}
-
-export const RESET_ERROR_MESSAGE = 'RESET_ERROR_MESSAGE'
-
-// Resets the currently visible error message.
-export function resetErrorMessage() {
-  return {
-    type: RESET_ERROR_MESSAGE
-  }
 }

@@ -37,24 +37,28 @@ class AddApi extends Component {
 
     }
 
-    handleSubmit(e) {
-        // this.props.form.setFieldsValue("")
+    handleSubmit() {
         console.log(this.props.form.getFieldValue("apiName"))
         console.log(this.props.form.getFieldValue("apiPath"))
         console.log(this.props.form.getFieldValue("apiTemplate"))
+        let template = this.props.form.getFieldValue("apiTemplate");
+        try {
+            template = JSON.stringify(JSON.parse(template))
+        } catch (e){
+            console.log(e.message)
+        }
     }
 
-    handleCancel(e) {
-        console.log("==<", e)
-
+    handleCancel() {
+        this.props.history.go(-1)
     }
 
     render() {
 
-        const { getFieldProps } = this.props.form;
+        const {getFieldProps} = this.props.form;
         const formItemLayout = {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 16 },
+            labelCol: {span: 4},
+            wrapperCol: {span: 16},
         };
 
         return <div>
@@ -83,10 +87,12 @@ class AddApi extends Component {
                         <Input type="textarea" {...getFieldProps("apiTemplate", {})} rows="30"/>
                     </FormItem>
 
-                    <FormItem class="ant-layout-center">
-                        <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
-                        &nbsp;&nbsp;&nbsp;
-                        <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
+                    <FormItem >
+                        <div className="ant-layout-center">
+                            <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
+                        </div>
                     </FormItem>
 
                 </Form>

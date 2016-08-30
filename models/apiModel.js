@@ -36,8 +36,8 @@ const detailView = {
 };
 
 // 获取组内api列表
-function getApiList({groupId}) {
-    return apiModel.find({groupId}, listView);
+function getApiList({groupId}, assignParams) {
+    return apiModel.find({groupId}, Object.assign(listView, assignParams));
 }
 
 // 查询组内path数量

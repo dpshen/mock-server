@@ -20,6 +20,10 @@ const listView = {
     groupPath:1
 };
 
+function getGroup({_id}) {
+    return groupModel.findOne({_id})
+}
+
 function getGroupList() {
     return groupModel.find({}, listView)
 }
@@ -54,6 +58,7 @@ function updateName({_id, groupName}) {
 }
 
 module.exports = {
+    getGroup,
     getGroupList,
     getPathCount,
     getNameCount,

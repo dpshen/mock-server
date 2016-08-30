@@ -25,9 +25,9 @@ export default class App extends React.Component {
 
     constructor(props) {
         super(props);
-        if (screen.width >= 1280) {
-            document.getElementsByTagName("html")[0].style["font-size"] = (100 / 1280) * screen.width + "px";
-        }
+        // if (screen.width >= 1280) {
+        //     document.getElementsByTagName("html")[0].style["font-size"] = (100 / 1280) * screen.width + "px";
+        // }
     }
 
     render() {

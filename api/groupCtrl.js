@@ -1,6 +1,7 @@
 const groupModel = require('../models/groupModel');
 const apiModel = require('../models/apiModel');
 const pathRegExp = new RegExp("[-a-z0-9_:@&?=+,.!/~*%$]");
+const objectIdRegExp = new RegExp("^[0-9a-fA-F]{24}$");
 
 async function addGroup(ctx, next) {
     let form = ctx.request.body || {},
@@ -42,13 +43,36 @@ async function updateGroup(ctx, next) {
     await next();
 }
 
+async function getGroup(ctx, next) {
+    let query = ctx.request.query;
+
+    if (!objectIdRegExp.test(query._id)) {
+        ctx.result.set(100, "缺少参数");
+        return null;
+    }
+
+    let group = await groupModel.getGroup(query);
+
+    if (group == null) {
+        ctx.result.set(104, "不存在的项目");
+        return null;
+    }
+
+    group = group.toObject();
+    group.apiList = await apiModel.getApiList({groupId: group._id}, {template:1});
+
+    ctx.result.setResult(group);
+
+    await next();
+}
+
 async function getGroupList(ctx, next) {
     let ret = await groupModel.getGroupList(),
         rst = [];
 
     for (let group of ret) {
         group = group.toObject();
-        group.apiList = await apiModel.getApiList({groupId:group._id});
+        group.apiList = await apiModel.getApiList({groupId: group._id});
         rst.push(group);
     }
     ctx.result.setResult(rst);
@@ -59,5 +83,6 @@ async function getGroupList(ctx, next) {
 module.exports = {
     addGroup,
     updateGroup,
+    getGroup,
     getGroupList
 }
