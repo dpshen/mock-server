@@ -38,9 +38,8 @@ class AddApi extends Component {
     }
 
     handleSubmit() {
-        console.log(this.props.form.getFieldValue("apiName"))
-        console.log(this.props.form.getFieldValue("apiPath"))
-        console.log(this.props.form.getFieldValue("apiTemplate"))
+        let ApiName = this.props.form.getFieldValue("apiName");
+        let apiPath = this.props.form.getFieldValue("apiPath");
         let template = this.props.form.getFieldValue("apiTemplate");
         try {
             template = JSON.stringify(JSON.parse(template))

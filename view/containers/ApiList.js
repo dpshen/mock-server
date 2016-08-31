@@ -3,6 +3,8 @@ import {Link} from 'react-router'
 import {Breadcrumb, Table, Button, Form, Modal, message, Select, Input, Icon} from 'antd';
 import Mock from 'mockjs';
 
+import {fetchApiList} from '../actions'
+
 const FormItem = Form.Item;
 
 export default class ApiList extends Component {
@@ -147,3 +149,22 @@ class ApiInfo extends Component {
 }
 
 ApiInfo = Form.create({})(ApiInfo);
+
+function mapStateToProps(state, ownProps) {
+    // We need to lower case the login/name due to the way GitHub's API behaves.
+    // Have a look at ../middleware/api.js for more details.
+
+    const {
+        entities: {apis}
+    } = state;
+
+    let apiList = [];
+
+    return {
+        apiList
+    }
+}
+
+export default connect(mapStateToProps, {
+    fetchApiList
+})(IndexScreen)

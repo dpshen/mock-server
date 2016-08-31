@@ -28,18 +28,20 @@ function callApi(endpoint, schema, options) {
         .then(response =>
             response.json().then(json => ({json, response}))
         ).then(({json, response}) => {
-            if (!response.ok) {
+            if (!response.ok ||  !json.success) {
                 return Promise.reject(json)
             }
 
             // const camelizedJson = camelizeKeys(json)
             const nextPageUrl = getNextPageUrl(response)
 
-            return Object.assign({},
+            let rst = Object.assign({},
                 // normalize(camelizedJson, schema),
-                normalize(json, schema),
+                normalize(json.data, schema),
                 {nextPageUrl}
-            )
+            );
+            console.log(fullUrl, "==>", rst)
+            return rst
         })
 }
 

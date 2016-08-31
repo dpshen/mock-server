@@ -72,7 +72,7 @@ async function getGroupList(ctx, next) {
 
     for (let group of ret) {
         group = group.toObject();
-        group.apiList = await apiModel.getApiList({groupId: group._id});
+        group.apiList = await apiModel.getApiList({groupId: group._id}, {template:1});
         rst.push(group);
     }
     ctx.result.setResult(rst);
