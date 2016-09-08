@@ -86,6 +86,17 @@ export default store => next => action => {
     const [ requestType, successType, failureType ] = types
     next(actionWith({type: requestType}))
 
+    if (options && typeof options.body === 'object' ) {
+        let bodyList = [];
+        console.log(options)
+        Object.keys(options.body).map(key => {
+            let value = options.body[key];
+            if (value){
+                bodyList.push(`${key}=${value}`)
+            }
+        });
+        options.body = bodyList.join("&");
+    }
     return callApi(endpoint, schema, options).then(
         response => next(actionWith({
             response,

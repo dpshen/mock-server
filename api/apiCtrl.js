@@ -1,4 +1,5 @@
 const apiModel = require('../models/apiModel');
+const groupModel = require('../models/groupModel');
 const objectIdRegExp = new RegExp("^[0-9a-fA-F]{24}$");
 const Mock = require('mockjs');
 
@@ -13,13 +14,13 @@ async function addApi(ctx, next) {
         return
     }
 
-    try {
-        JSON.parse(form.template)
-    } catch (e) {
-        ctx.logger.error("==>", e);
-        ctx.result.set(101, "模版格式错误.");
-        return
-    }
+    // try {
+    //     JSON.parse(form.template)
+    // } catch (e) {
+    //     ctx.logger.error("==>", e);
+    //     ctx.result.set(101, "模版格式错误.");
+    //     return
+    // }
 
     // 检查是否已存在接口地址
     ret = await apiModel.getPathCount(form);
@@ -39,6 +40,8 @@ async function addApi(ctx, next) {
 
     ret = await apiModel.addApi(form);
     ctx.logger.trace("apiModel.addApi", ret);
+
+    ret = await groupModel.getGroup({_id:from.groupId})
     ctx.result.setResult(ret);
 
     await next();
@@ -47,6 +50,7 @@ async function addApi(ctx, next) {
 async function updateApi(ctx, next) {
     let form = ctx.request.body || {},
         ret;
+    ctx.logger.debug(ctx.request)
 
     if (!(form && form.path && form.name && form.template && objectIdRegExp.test(form._id) )) {
         // 检查参数
@@ -54,13 +58,13 @@ async function updateApi(ctx, next) {
         return
     }
 
-    try {
-        JSON.parse(form.template)
-    } catch (e) {
-        ctx.logger.error("==>", e);
-        ctx.result.set(101, "模版格式错误.");
-        return
-    }
+    // try {
+    //     JSON.parse(form.template)
+    // } catch (e) {
+    //     ctx.logger.error("==>", e);
+    //     ctx.result.set(101, "模版格式错误.");
+    //     return
+    // }
 
     // 检查是否已存在接口地址
     let api = await apiModel.getApi(form);
@@ -88,6 +92,12 @@ async function updateApi(ctx, next) {
 
     ret = await apiModel.updateApi(form);
     ctx.logger.trace("apiModel.updateApi", ret);
+
+    if (ret.ok){
+        // 返回最新接口
+        // ret = await apiModel.getApi({_id:form._id})
+        ret = await groupModel.getGroup({_id:from.groupId})
+    }
     ctx.result.setResult(ret);
 
     await next();
@@ -126,8 +136,8 @@ async function getApi(ctx, next) {
 
 
     api = api.toObject();
-    let template = JSON.parse(api.template || "{}");
-    api.mockData = Mock.mock(template);
+    // let template = JSON.parse(api.template || "{}");
+    // api.mockData = Mock.mock(template);
 
     ctx.result.setResult(api);
 

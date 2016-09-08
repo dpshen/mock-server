@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
-import {Breadcrumb, Table, Button, Modal, message, Form, Select, Input, Icon} from 'antd';
+import {connect} from 'react-redux'
+import {Button, message, Form, Input } from 'antd';
 const FormItem = Form.Item;
+
+import {addApi} from '../actions'
 
 class AddApi extends Component {
     constructor(props) {
@@ -38,14 +41,21 @@ class AddApi extends Component {
     }
 
     handleSubmit() {
-        let ApiName = this.props.form.getFieldValue("apiName");
+        const groupId = this.props.groupId;
+        let newApi = {groupId};
+        let apiName = this.props.form.getFieldValue("apiName");
         let apiPath = this.props.form.getFieldValue("apiPath");
-        let template = this.props.form.getFieldValue("apiTemplate");
+        let template = this.props.form.getFieldValue("apiTemplate") || "";
+        newApi.name = apiName;
+        newApi.path = apiPath;
         try {
-            template = JSON.stringify(JSON.parse(template))
-        } catch (e){
-            console.log(e.message)
+            newApi.template = encodeURIComponent(JSON.stringify(JSON.parse(template)));
+        } catch (e) {
+            newApi.template = encodeURIComponent(template);
+            console.log(e.message);
+            // message.error(`模版格式错误:${e.message}`);
         }
+        this.props.addApi(newApi)
     }
 
     handleCancel() {
@@ -60,6 +70,8 @@ class AddApi extends Component {
             wrapperCol: {span: 16},
         };
 
+        let required = true;
+
         return <div>
             <div className="ant-layout-header">
                 <h1 style={{marginLeft: 20}}>{"创建接口"}</h1>
@@ -70,20 +82,20 @@ class AddApi extends Component {
                         label="接口名称"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiName", {})} placeholder="接口的名称(仅用于标识接口)"/>
+                        <Input {...getFieldProps("apiName", {required})} placeholder="接口的名称(仅用于标识接口)"/>
                     </FormItem>
 
                     <FormItem
                         label="接口地址"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiPath", {})} addonBefore="Http://"/>
+                        <Input {...getFieldProps("apiPath", {required})} addonBefore="Http://"/>
                     </FormItem>
                     <FormItem
                         label="Mock模版"
                         {...formItemLayout}
                     >
-                        <Input type="textarea" {...getFieldProps("apiTemplate", {})} rows="30"/>
+                        <Input type="textarea" {...getFieldProps("apiTemplate", {required})} rows="30"/>
                     </FormItem>
 
                     <FormItem >
@@ -103,3 +115,18 @@ class AddApi extends Component {
 AddApi = Form.create({})(AddApi);
 
 export default AddApi;
+
+function mapStateToProps(state, ownProps) {
+    // We need to lower case the login/name due to the way GitHub's API behaves.
+    // Have a look at ../middleware/api.js for more details.
+
+    let groupId = ownProps.params.group;
+
+    return {
+        groupId
+    }
+}
+
+export default connect(mapStateToProps, {
+    addApi
+})(AddApi)

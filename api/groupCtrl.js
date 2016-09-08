@@ -33,6 +33,7 @@ async function addGroup(ctx, next) {
     if (ctx.result.code == 0) {
         ret = await groupModel.addGroup(form);
         ctx.logger.trace("groupModel.addGroup", ret);
+        ret = await groupModel.getGroupList();
         ctx.result.setResult(ret);
     }
 

@@ -1,26 +1,19 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
-import {Breadcrumb, Table, Button, Form, Modal, message, Select, Input, Icon} from 'antd';
+import {connect} from 'react-redux'
+import {Table, Button, Form, Modal, message, Input} from 'antd';
 import Mock from 'mockjs';
 
 import {fetchApiList} from '../actions'
 
 const FormItem = Form.Item;
 
-export default class ApiList extends Component {
+class ApiList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             showMockData: false,
-            apiList: [
-                {
-                    "_id": "57b42a8a84fc0b74151e6e23",
-                    "template": "{   \"array|1-10\": [     {       \"name|+1\": [         \"Hello\",         \"Mock.js\",         \"!\"       ]     }   ] }",
-                    "path": "/test/api/getNum",
-                    "name": "getNum"
-                }
-            ]
         };
 
         this.columns = [{
@@ -43,6 +36,11 @@ export default class ApiList extends Component {
 
     }
 
+    componentWillMount() {
+        const {fetchApiList, groupId} = this.props;
+        fetchApiList(groupId);
+    }
+
     showMockData(apiInfo) {
         this.setState({
             apiInfo,
@@ -58,11 +56,12 @@ export default class ApiList extends Component {
     }
 
     render() {
-        let {showMockData, apiInfo, apiList} = this.state;
+        let {showMockData, apiInfo} = this.state;
+        const {apiList} = this.props;
         return <div>
             <div className="ant-layout-header">
                 <h1 style={{marginLeft: 20}}>{"接口"}</h1>
-                <Link to={"./addApi"} className="m-l-10 ant-btn-primary ant-btn-lg">创建接口</Link>
+                <Link to={`/${this.props.groupId}/addApi`} className="m-l-10 ant-btn-primary ant-btn-lg">创建接口</Link>
             </div>
             <div className="ant-layout-container">
                 <Table columns={this.columns} dataSource={apiList}/>
@@ -78,26 +77,23 @@ class ApiInfo extends Component {
         this.state = {};
     }
 
-    componentWillReceiveProps(props){
+    componentWillReceiveProps(props) {
         this.generateMockData(props)
     }
 
-    generateMockData(props){
-        let {apiInfo, visible } = props || this.props;
+    generateMockData(props) {
+        let {apiInfo, visible} = props || this.props;
         let mockData = "";
         if (apiInfo && visible) {
+            let template = apiInfo.template;
             try {
-                mockData = JSON.stringify(Mock.mock(JSON.parse(apiInfo.template)), null, 4);
-                this.setState({mockData:mockData});
-                return true;
+                template = JSON.parse(apiInfo.template);
+                mockData = JSON.stringify(Mock.mock(template), null, 4);
             } catch (e) {
-                const modal = Modal.error({
-                    title: 'Mock模版解析错误',
-                    content: e.message,
-                });
-                setTimeout(() => modal.destroy(), 3000);
-                return false;
+                mockData = Mock.mock(template)
             }
+            this.setState({mockData: mockData});
+            return true;
         } else {
             return false;
         }
@@ -112,13 +108,14 @@ class ApiInfo extends Component {
             wrapperCol: {span: 16},
         };
 
-        if (!apiInfo ){
+        if (!apiInfo) {
             return null;
         }
 
         return (
 
-            <Modal title="" visible={visible} onOk={this.generateMockData.bind(this)} okText={"重新生成"} cancelText={"关闭"} onCancel={hideMockData}>
+            <Modal title="" visible={visible} onOk={this.generateMockData.bind(this)} okText={"重新生成"} cancelText={"关闭"}
+                   onCancel={hideMockData}>
                 <Form horizontal>
                     <FormItem
                         label="接口名称"
@@ -132,13 +129,15 @@ class ApiInfo extends Component {
                         label="接口地址"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiPath", {initialValue: apiInfo.path})} addonBefore="Http://"  disabled={true} />
+                        <Input {...getFieldProps("apiPath", {initialValue: apiInfo.path})} addonBefore="Http://"
+                               disabled={true}/>
                     </FormItem>
                     <FormItem
                         label="Mock数据"
                         {...formItemLayout}
                     >
-                        <Input type="textarea" {...getFieldProps("mockData", {initialValue: this.state.mockData})} rows="20"/>
+                        <Input type="textarea" {...getFieldProps("mockData", {initialValue: this.state.mockData})}
+                               rows="20"/>
                     </FormItem>
 
                 </Form>
@@ -155,16 +154,25 @@ function mapStateToProps(state, ownProps) {
     // Have a look at ../middleware/api.js for more details.
 
     const {
-        entities: {apis}
+        entities: {apis, groups}
     } = state;
 
     let apiList = [];
+    let groupId = ownProps.params.group;
+
+    // TODO 修改成用group中的apilist获取
+    Object.keys(apis).map(key => {
+        if (apis[key].groupId === groupId) {
+            apiList.push(apis[key])
+        }
+    });
 
     return {
-        apiList
+        apiList,
+        groupId
     }
 }
 
 export default connect(mapStateToProps, {
     fetchApiList
-})(IndexScreen)
+})(ApiList)

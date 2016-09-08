@@ -1,64 +1,50 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux'
 import {Link} from 'react-router'
 import {Breadcrumb, Table, Button, Modal, message, Form, Select, Input, Icon} from 'antd';
 const FormItem = Form.Item;
+
+import {fetchApi, updateApi} from '../actions'
 
 class ApiTemplate extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            apiInfo: {
-                "_id": "57b42a8a84fc0b74151e6e23",
-                "createTime": "2016-08-17T09:12:42.700Z",
-                "template": "{   \"array|1-10\": [     {       \"name|+1\": [         \"Hello\",         \"Mock.js\",         \"!\"       ]     }   ] }",
-                "groupId": "57b40ba967c24bd613a0c243",
-                "path": "/test/api/getNum",
-                "name": "getNum",
-                "modifyTime": "2016-08-18T00:52:48.153Z",
-                "mockData": {
-                    "array": [
-                        {
-                            "name": "Hello"
-                        },
-                        {
-                            "name": "Mock.js"
-                        },
-                        {
-                            "name": "!"
-                        },
-                        {
-                            "name": "Hello"
-                        },
-                        {
-                            "name": "Mock.js"
-                        },
-                        {
-                            "name": "!"
-                        },
-                        {
-                            "name": "Hello"
-                        }
-                    ]
-                }
-            }
-        };
+        this.state = {};
 
     }
 
     handleSubmit() {
+        let api = this.props.apiInfo;
         let apiName = this.props.form.getFieldValue("apiName");
         let apiPath = this.props.form.getFieldValue("apiPath");
         let template = this.props.form.getFieldValue("apiTemplate");
+        api.template = encodeURIComponent(template);
+        api.name = apiName;
+        api.path = apiPath;
         try {
-            template = JSON.stringify(JSON.parse(template))
-        } catch (e){
-            console.log(e.message)
+            api.template = encodeURIComponent(JSON.stringify(JSON.parse(template), null, 0))
+        } catch (e) {
+            console.log(e.message);
+            // message.error(`模版格式错误:${e.message}`);
         }
+        this.props.updateApi(api)
     }
 
     handleCancel() {
         this.props.history.go(-1)
+    }
+
+    jsonFormat(){
+        let template = this.props.form.getFieldValue("apiTemplate");
+        try {
+            template = JSON.stringify(JSON.parse(template), null, 4);
+            this.props.form.setFieldsValue({"apiTemplate": template});
+            message.success('JSON格式化成功')
+        } catch (e){
+            message.error(`模版格式错误:${e.message}`);
+        }
+
     }
 
     render() {
@@ -69,11 +55,16 @@ class ApiTemplate extends Component {
             wrapperCol: {span: 16},
         };
 
-        let apiInfo = this.state.apiInfo || {};
+        let apiInfo = this.props.apiInfo;
 
-        let template = JSON.stringify(JSON.parse(apiInfo.template),null, 4);
+        let template = apiInfo.template || "";
+        try {
+            template = JSON.stringify(JSON.parse(template), null, 4);
+        } catch (e){
 
-        return <div>
+        }
+
+        return <div >
             <div className="ant-layout-header">
                 <h1 style={{marginLeft: 20}}>{"修改接口"}</h1>
             </div>
@@ -83,27 +74,30 @@ class ApiTemplate extends Component {
                         label="接口名称"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiName", {initialValue:apiInfo.name})} placeholder="接口的名称(仅用于标识接口)"/>
+                        <Input {...getFieldProps("apiName", {initialValue: apiInfo.name})}
+                               placeholder="接口的名称(仅用于标识接口)"/>
                     </FormItem>
 
                     <FormItem
                         label="接口地址"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiPath", {initialValue:apiInfo.path})} addonBefore="Http://"/>
+                        <Input {...getFieldProps("apiPath", {initialValue: apiInfo.path})} addonBefore="Http://"/>
                     </FormItem>
                     <FormItem
                         label="Mock模版"
                         {...formItemLayout}
                     >
-                        <Input type="textarea" {...getFieldProps("apiTemplate", {initialValue:template})} rows="30"/>
+                        <Input type="textarea" {...getFieldProps("apiTemplate", {initialValue: template})} rows="30"/>
                     </FormItem>
 
                     <FormItem >
-                        <div className="ant-layout-center">
-                            <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
-                            &nbsp;&nbsp;&nbsp;
+                        <div style={{width:250}} className="ant-layout-center">
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button onClick={this.jsonFormat.bind(this)}>JSON格式化</Button>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
                         </div>
                     </FormItem>
 
@@ -115,4 +109,24 @@ class ApiTemplate extends Component {
 
 ApiTemplate = Form.create({})(ApiTemplate);
 
-export default ApiTemplate;
+function mapStateToProps(state, ownProps) {
+    // We need to lower case the login/name due to the way GitHub's API behaves.
+    // Have a look at ../middleware/api.js for more details.
+
+    const {
+        entities: {apis}
+    } = state;
+
+    let apiId = ownProps.params.api;
+
+    let apiInfo = apis[apiId] || {};
+
+    return {
+        apiInfo
+    }
+}
+
+export default connect(mapStateToProps, {
+    fetchApi,
+    updateApi
+})(ApiTemplate)
