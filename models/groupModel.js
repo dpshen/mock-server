@@ -29,13 +29,21 @@ function getGroupList() {
 }
 
 // 查询组内path数量
-function getPathCount({groupPath}) {
-    return groupModel.find({groupPath}).count()
+function getPathCount({groupPath, _id}) {
+    let filter = {groupPath};
+    if (_id){
+        filter._id = {$ne:_id}
+    }
+    return groupModel.find(filter).count()
 }
 
 // 查询组内name数量
-function getNameCount({groupName}) {
-    return groupModel.find({groupName}).count()
+function getNameCount({groupName, _id}) {
+    let filter = {groupName};
+    if (_id){
+        filter._id = {$ne:_id}
+    }
+    return groupModel.find(filter).count()
 }
 
 function addGroup(form) {
@@ -47,14 +55,9 @@ function addGroup(form) {
     return group.save()
 }
 
-function updatePath({_id, groupPath}) {
+function updateGroup({_id, groupPath, groupName}) {
     let modifyTime = new Date();
-    return groupPath.update({_id}, {$set: {groupPath, modifyTime}})
-}
-
-function updateName({_id, groupName}) {
-    let modifyTime = new Date();
-    return groupPath.update({_id}, {$set: {groupName, modifyTime}})
+    return groupModel.update({_id}, {$set: {groupPath,groupName, modifyTime}})
 }
 
 module.exports = {
@@ -63,6 +66,5 @@ module.exports = {
     getPathCount,
     getNameCount,
     addGroup,
-    updatePath,
-    updateName
+    updateGroup
 };

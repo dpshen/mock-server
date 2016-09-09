@@ -3,6 +3,7 @@ const groupModel = require('../models/groupModel');
 const objectIdRegExp = new RegExp("^[0-9a-fA-F]{24}$");
 const Mock = require('mockjs');
 
+const groupCtrl = require('./groupCtrl');
 
 async function addApi(ctx, next) {
     let form = ctx.request.body || {},
@@ -41,10 +42,20 @@ async function addApi(ctx, next) {
     ret = await apiModel.addApi(form);
     ctx.logger.trace("apiModel.addApi", ret);
 
-    ret = await groupModel.getGroup({_id:from.groupId})
-    ctx.result.setResult(ret);
+    // ret = await groupModel.getGroup({_id:form.groupId})
+    // ctx.result.setResult(ret);
+    ctx.request.query._id = form.groupId;
+    await groupCtrl.getGroup(ctx, next);
+    return ;
 
-    await next();
+    // let group = await groupModel.getGroup({_id:form.groupId});
+    //
+    // group = group.toObject();
+    // group.apiList = await apiModel.getApiList({groupId: group._id}, {template:1});
+    //
+    // ctx.result.setResult(group);
+    //
+    // await next();
 }
 
 async function updateApi(ctx, next) {
@@ -96,9 +107,12 @@ async function updateApi(ctx, next) {
     if (ret.ok){
         // 返回最新接口
         // ret = await apiModel.getApi({_id:form._id})
-        ret = await groupModel.getGroup({_id:from.groupId})
+        // ret = await groupModel.getGroup({_id:form.groupId})
+        ctx.request.query._id = form.groupId;
+        await groupCtrl.getGroup(ctx, next);
+        return ;
     }
-    ctx.result.setResult(ret);
+    // ctx.result.setResult(ret);
 
     await next();
 }

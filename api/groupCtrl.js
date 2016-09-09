@@ -33,14 +33,47 @@ async function addGroup(ctx, next) {
     if (ctx.result.code == 0) {
         ret = await groupModel.addGroup(form);
         ctx.logger.trace("groupModel.addGroup", ret);
-        ret = await groupModel.getGroupList();
-        ctx.result.setResult(ret);
+        await getGroupList(ctx, next);
+        return;
     }
 
     await next();
 }
 
 async function updateGroup(ctx, next) {
+
+    let form = ctx.request.body || {},
+        ret;
+
+    if (!(form && form._id && form.groupPath && form.groupName)) {
+        // 检查参数
+        ctx.result.set(100, "缺少参数");
+        return
+    }
+
+    // 检查是否已存在接口地址
+    ret = await groupModel.getPathCount(form);
+    ctx.logger.trace("groupModel.getPathCount", ret);
+    if (ret > 0) {
+        ctx.result.set(101, `Group路径${form.groupPath}已存在`);
+        return;
+    }
+
+    // 检查是否已存在接口名字
+    ret = await groupModel.getNameCount(form);
+    ctx.logger.trace("groupModel.getNameCount", ret);
+    if (ret > 0) {
+        ctx.result.set(102, `Group名称${form.groupName}已存在`);
+        return;
+    }
+
+    // Add api
+    if (ctx.result.code == 0) {
+        ret = await groupModel.updateGroup(form);
+        ctx.logger.trace("groupModel.addGroup", ret);
+        await getGroupList(ctx, next);
+        return;
+    }
     await next();
 }
 
@@ -60,7 +93,7 @@ async function getGroup(ctx, next) {
     }
 
     group = group.toObject();
-    group.apiList = await apiModel.getApiList({groupId: group._id}, {template:1});
+    group.apiList = await apiModel.getApiList({groupId: group._id}, {template: 1});
 
     ctx.result.setResult(group);
 
@@ -73,7 +106,7 @@ async function getGroupList(ctx, next) {
 
     for (let group of ret) {
         group = group.toObject();
-        group.apiList = await apiModel.getApiList({groupId: group._id}, {template:1});
+        group.apiList = await apiModel.getApiList({groupId: group._id}, {template: 1});
         rst.push(group);
     }
     ctx.result.setResult(rst);

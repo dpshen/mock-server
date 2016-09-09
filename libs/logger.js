@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const log4jsconf = require('../config').log4jsconf;
+const log4jsconf = require('../server-config').log4jsconf;
 
 log4js.configure(log4jsconf);
 var logger = log4js.getLogger('mock');

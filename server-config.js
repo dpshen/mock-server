@@ -38,6 +38,6 @@ if (process.argv[2] == "dev"){
 const dbAddr = "mongodb://mock:yuantu123@localhost/mock";
 
 module.exports = {
-    dbAddr: dbAddr,
-    log4jsconf: log4jsconf
+    dbAddr,
+    log4jsconf,
 };

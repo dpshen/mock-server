@@ -60,6 +60,30 @@ export function addGroup(formData) {
         })
     }
 }
+
+export const UPDATE_GROUP = 'UPDATE_GROUP'
+export const UPDATE_GROUP_SUCCESS = 'UPDATE_GROUP_SUCCESSS'
+export const UPDATE_GROUP_FAILURE = 'UPDATE_GROUP_FAILUREE'
+
+// Fetches a single repository from Github API.
+// Relies on the custom API middleware defined in ../middleware/api.js.
+export function updateGroup(formData) {
+    return (dispatch, getState) => {
+        return dispatch({
+            [CALL_API]: {
+                types: [UPDATE_GROUP, UPDATE_GROUP_SUCCESS, UPDATE_GROUP_FAILURE],
+                endpoint: `/updateGroup`,
+                schema: Schemas.GROUP_ARRAY,
+                options: {
+                    method: "POST",
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: formData
+                }
+            }
+        })
+    }
+}
+
 export const GET_API_LIST = 'GET_API_LIST'
 export const GET_API_LIST_SUCCESS = 'GET_API_LIST_SUCCESSS'
 export const GET_API_LIST_FAILURE = 'GET_API_LIST_FAILUREE'

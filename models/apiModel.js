@@ -20,6 +20,9 @@ var apiModel = db.model('api', apiSchema);
 
 const listView = {
     _id: 1,
+    groupId: 1,
+    groupName: 1,
+    template: 1,
     path: 1,
     name: 1
 };

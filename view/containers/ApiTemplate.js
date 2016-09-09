@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router'
 import {Breadcrumb, Table, Button, Modal, message, Form, Select, Input, Icon} from 'antd';
 const FormItem = Form.Item;
+import {MOCK_ROOT} from '../web-config'
 
 import {fetchApi, updateApi} from '../actions'
 
@@ -55,9 +56,10 @@ class ApiTemplate extends Component {
             wrapperCol: {span: 16},
         };
 
-        let apiInfo = this.props.apiInfo;
+        let {apiInfo, groupInfo} = this.props;
 
         let template = apiInfo.template || "";
+        const GROUP_ROOT = `${MOCK_ROOT}${groupInfo.groupPath}`;
         try {
             template = JSON.stringify(JSON.parse(template), null, 4);
         } catch (e){
@@ -82,7 +84,7 @@ class ApiTemplate extends Component {
                         label="接口地址"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiPath", {initialValue: apiInfo.path})} addonBefore="Http://"/>
+                        <Input {...getFieldProps("apiPath", {initialValue: apiInfo.path})} addonBefore={GROUP_ROOT} />
                     </FormItem>
                     <FormItem
                         label="Mock模版"
@@ -114,15 +116,18 @@ function mapStateToProps(state, ownProps) {
     // Have a look at ../middleware/api.js for more details.
 
     const {
-        entities: {apis}
+        entities: {apis, groups}
     } = state;
 
     let apiId = ownProps.params.api;
+    let groupId = ownProps.params.group;
 
     let apiInfo = apis[apiId] || {};
+    let groupInfo = groups[groupId] || {};
 
     return {
-        apiInfo
+        apiInfo,
+        groupInfo
     }
 }
 

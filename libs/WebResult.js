@@ -3,14 +3,14 @@ var xss = require("xss");
 function WebResult(req) {
     this.jsonCallbackName = xss(req.query.callback || "");
     this.code = 0;
-    this.msg = "";
+    this.message = "";
     this.data = {};
 }
 
 WebResult.prototype = {
-    set: function (code, msg) {
+    set: function (code, message) {
         this.code = code;
-        this.msg = msg
+        this.message = message
     },
     setResult: function (result) {
         this.data = result || {};
@@ -24,7 +24,7 @@ WebResult.prototype = {
             return {
                 success: (this.code == 200),
                 code: this.code,
-                msg: this.msg,
+                message: this.message,
                 data: this.data,
                 returnTime: new Date()
             }

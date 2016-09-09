@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {Menu, Breadcrumb, Icon} from 'antd';
 import {Link} from 'react-router'
 
-import {fetchGroupList} from '../actions'
+import {fetchGroupList, GET_GROUP_LIST_FAILURE} from '../actions'
 
 import './IndexScreen.less'
 
@@ -11,6 +11,12 @@ class IndexScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {}
+    }
+
+    componentWillReceiveProps(newProps) {
+        if (newProps.error.type === GET_GROUP_LIST_FAILURE && newProps.error.message !== this.props.error.message) {
+            message.error(newProps.error.message)
+        }
     }
 
     componentWillMount() {
@@ -37,7 +43,7 @@ class IndexScreen extends Component {
             <div className="ant-layout-aside">
                 <aside className="ant-layout-sider">
                     <Link className="ant-layout-logo" to="/">FBI
-                        <small>mock</small>
+                        <small> mock</small>
                     </Link>
                     <Menu mode="inline" onSelect={this.onSelect.bind(this)} onClick={this.onSelect.bind(this)}
                           theme="dark" selectedKeys={selectedKeys}>
@@ -67,13 +73,15 @@ function mapStateToProps(state, ownProps) {
     // Have a look at ../middleware/api.js for more details.
 
     const {
-        entities: {groups}
+        entities: {groups},
+        error
     } = state;
 
     let groupList = Object.keys(groups).map(key => groups[key]);
 
     return {
-        groupList
+        groupList,
+        error
     }
 }
 

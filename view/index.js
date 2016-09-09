@@ -8,7 +8,6 @@ import configureStore from './store/configureStore'
 
 import IndexScreen from './containers/IndexScreen'
 import GroupList from './containers/GroupList'
-import AddGroup from './containers/AddGroup'
 import ApiList from './containers/ApiList'
 import AddApi from './containers/AddApi'
 import ApiTemplate from './containers/ApiTemplate'
@@ -37,7 +36,6 @@ export default class App extends React.Component {
                     <Route path="/" component={IndexScreen}>
                         <IndexRedirect to="groupList"/>
                         <Route path="groupList" component={GroupList}/>
-                        <Route path="addGroup" component={AddGroup}/>
                         <Route path=":group">
                             <IndexRedirect to="apiList"/>
                             <Route path="apiList" component={ApiList}/>

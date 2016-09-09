@@ -1,6 +1,7 @@
 const Koa = require('koa');
 const convert = require('koa-convert');
 const json = require('koa-json');
+// const cors = require('koa-cors');
 const staticServer = require('./middleware/static');
 
 const bodyparser = require('koa-bodyparser')({
@@ -14,6 +15,7 @@ const router = require('./router');
 const logger = require('./libs/logger');
 const WebResult = require('./libs/WebResult');
 
+// app.use(convert(cors()));
 app.use(convert(bodyparser));
 app.use(convert(json()));
 

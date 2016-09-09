@@ -29,7 +29,7 @@ class ApiList extends Component {
                 <span>
                     <a onClick={this.showMockData.bind(this, record)}>Mock数据</a>
                     <span className="ant-divider"/>
-                    <Link to={`./${record._id}/template`}>Mock规则</Link>
+                    <Link to={`./${record._id}/template`}>修改</Link>
                 </span>
             ),
         }];
@@ -157,15 +157,13 @@ function mapStateToProps(state, ownProps) {
         entities: {apis, groups}
     } = state;
 
-    let apiList = [];
     let groupId = ownProps.params.group;
+    let group = groups[groupId];
 
-    // TODO 修改成用group中的apilist获取
-    Object.keys(apis).map(key => {
-        if (apis[key].groupId === groupId) {
-            apiList.push(apis[key])
-        }
-    });
+    let apiList = [];
+    if (group) {
+        apiList = group.apiList.map(key => apis[key]);
+    }
 
     return {
         apiList,

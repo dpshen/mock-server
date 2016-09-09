@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {Button, message, Form, Input } from 'antd';
 const FormItem = Form.Item;
 
-import {addApi} from '../actions'
+import {addApi, ADD_API_FAILURE} from '../actions'
 
 class AddApi extends Component {
     constructor(props) {
@@ -40,6 +40,11 @@ class AddApi extends Component {
 
     }
 
+    componentWillReceiveProps(newProps) {
+        if (newProps.error.type === ADD_API_FAILURE && newProps.error.message !== this.props.error.message) {
+            message.error(newProps.error.message)
+        }
+    }
     handleSubmit() {
         const groupId = this.props.groupId;
         let newApi = {groupId};
@@ -121,9 +126,13 @@ function mapStateToProps(state, ownProps) {
     // Have a look at ../middleware/api.js for more details.
 
     let groupId = ownProps.params.group;
+    const {
+        error
+    } = state;
 
     return {
-        groupId
+        groupId,
+        error
     }
 }
 

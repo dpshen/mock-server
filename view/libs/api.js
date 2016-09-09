@@ -17,7 +17,7 @@ function getNextPageUrl(response) {
     return nextLink.split(';')[0].slice(1, -1)
 }
 
-const API_ROOT = 'http://mock.yuantutech.com'
+const API_ROOT = require('../web-config').API_ROOT;
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
@@ -88,7 +88,6 @@ export default store => next => action => {
 
     if (options && typeof options.body === 'object' ) {
         let bodyList = [];
-        console.log(options)
         Object.keys(options.body).map(key => {
             let value = options.body[key];
             if (value){
@@ -97,6 +96,7 @@ export default store => next => action => {
         });
         options.body = bodyList.join("&");
     }
+
     return callApi(endpoint, schema, options).then(
         response => next(actionWith({
             response,

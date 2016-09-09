@@ -3,16 +3,17 @@ import {connect} from 'react-redux'
 import {Router, Route, Link, browserHistory} from 'react-router'
 import {Breadcrumb, Table, Button, Form, Modal, message, Select, Input, Icon} from 'antd';
 
-import {fetchGroupList, addGroup} from '../actions'
-// import './GroupList.less'
-
-// import {AddGroup} from './AddGroup'
+import {fetchGroupList, addGroup, updateGroup, ADD_GROUP_FAILURE, UPDATE_GROUP_FAILURE} from '../actions'
+import {MOCK_ROOT} from '../web-config'
 
 class GroupList extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {showAddGroup: false};
+        this.state = {
+            showAddGroup: false,
+            selectGroup: {}
+        };
 
         this.columns = [{
             title: '项目',
@@ -30,61 +31,100 @@ class GroupList extends Component {
             key: 'operation',
             render: (text, record) => (
                 <span>
-                    <a href="#">查看</a>
-                    <span className="ant-divider"/>
-                    <a href="#">修改</a>
+                    <a onClick={this.editGroup.bind(this, record)}>修改</a>
                 </span>
             ),
         }];
 
     }
 
+    componentWillReceiveProps(newProps) {
+        if ([ADD_GROUP_FAILURE, UPDATE_GROUP_FAILURE].includes(newProps.error.type) && newProps.error.message !== this.props.error.message) {
+            message.error(newProps.error.message)
+        }
+    }
+
+    toGroup(record){
+        this.props.history.replace(`/${record._id}`);
+    }
+
     addGroup() {
         this.setState({
-            showAddGroup: true
+            showAddGroup: true,
+            selectGroup: {}
         })
     }
 
-    cancelAddGroup() {
+    editGroup(group, e) {
+        e.preventDefault();
+        e.stopPropagation();
         this.setState({
-            showAddGroup: false
-        })
+            showAddGroup: true,
+            selectGroup: group
+
+        });
+    }
+
+    hideGroupModal() {
+        this.setState({
+            showAddGroup: false,
+            selectGroup: {}
+        }, this.props.form.resetFields)
     }
 
     handleSubmit() {
         let groupName = this.props.form.getFieldValue("groupName");
         let groupPath = this.props.form.getFieldValue("groupPath");
-        const group = {groupName, groupPath};
-        this.props.addGroup(group);
-        this.props.fetchGroupList();
-        this.cancelAddGroup();
+        groupPath = groupPath.trim();
+        let group = {groupName, groupPath};
+        let selectGroup = this.state.selectGroup;
+        if (selectGroup._id) {
+            group = {...selectGroup, ...group};
+            this.props.updateGroup(group)
+        } else {
+            this.props.addGroup(group);
+        }
+        this.hideGroupModal();
     }
 
     render() {
-        const {groupList, fetchGroupList, addGroup} = this.props;
+        const {groupList} = this.props;
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 4},
             wrapperCol: {span: 16},
         };
         let showAddGroup = this.state.showAddGroup;
+
+        let {
+            groupName,
+            groupPath
+        } = this.state.selectGroup;
+
+        const groupNameProps = getFieldProps("groupName", {
+            initialValue: groupName,
+            rules :[
+                { required: true, type:"string", pattern: /^[a-z]+$/ }
+            ]
+        })
+
         return <div>
             <div className="ant-layout-header">
                 <h1 style={{marginLeft: 20}}>{"项目"}</h1>
                 <Button onClick={this.addGroup.bind(this)} className="m-l-10 ant-btn-primary ant-btn-lg">创建项目</Button>
             </div>
             <div className="ant-layout-container">
-                <Table columns={this.columns} dataSource={groupList}/>
+                <Table columns={this.columns} dataSource={groupList} onRowClick={this.toGroup.bind(this)}/>
             </div>
-            <Modal title="" visible={showAddGroup} onCancel={this.cancelAddGroup.bind(this)}
+            <Modal title="" visible={showAddGroup} onCancel={this.hideGroupModal.bind(this)}
                    onOk={this.handleSubmit.bind(this)}>
                 <Form horizontal>
                     <Form.Item label="项目名称" {...formItemLayout}>
-                        <Input {...getFieldProps("groupName", {})} placeholder="项目的名称(仅用于标识项目)"/>
+                        <Input {...getFieldProps("groupName", {initialValue: groupName})} placeholder="项目的名称(仅用于标识项目)"/>
                     </Form.Item>
 
                     <Form.Item label="项目地址" {...formItemLayout}>
-                        <Input {...getFieldProps("groupPath", {})} />
+                        <Input {...getFieldProps("groupPath", {initialValue: groupPath})} addonBefore={MOCK_ROOT} />
                     </Form.Item>
                 </Form>
 
@@ -101,18 +141,21 @@ function mapStateToProps(state, ownProps) {
     // Have a look at ../middleware/api.js for more details.
 
     const {
-        entities: {groups}
+        entities: {groups},
+        error
     } = state;
 
     let groupList = Object.keys(groups).map(key => groups[key]);
 
     return {
-        groupList
+        groupList,
+        error
     }
 }
 
 
 export default connect(mapStateToProps, {
     fetchGroupList,
-    addGroup
+    addGroup,
+    updateGroup
 })(GroupList)

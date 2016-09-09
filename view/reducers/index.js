@@ -14,16 +14,14 @@ function entities(state = {groups: {}, apis: {}}, action) {
 }
 
 // Updates error message to notify about the failed fetches.
-function errorMessage(state = null, action) {
+function error(state = null, action) {
     const {type, error} = action
 
-    if (type === ActionTypes.RESET_ERROR_MESSAGE) {
-        return null
-    } else if (error) {
-        return action.error
+    if (error) {
+        return {type, message:error}
     }
 
-    return state
+    return {type: null, message:""}
 }
 
 // Updates the pagination data for different actions.
@@ -49,7 +47,7 @@ const pagination = combineReducers({
 const rootReducer = combineReducers({
     entities,
     pagination,
-    errorMessage,
+    error,
     routing
 })
 

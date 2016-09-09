@@ -3,7 +3,7 @@ require("babel-polyfill");
 
 const app = require('./app');
 
-app.listen(3000);
+app.listen(3100);
 console.log(`Open http://mock.yuantutech.com`)
 
 // react...
@@ -48,8 +48,6 @@ if (process.argv.length > 2 && process.argv[2].indexOf('dev') != -1){
     });
 
     server.listen(port);
-
-    console.log(`Open http://${hosts}:${port}`)
 }
 
 
