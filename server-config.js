@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 fs.existsSync(process.env.HOME + "/log") || fs.mkdirSync(process.env.HOME + "/log");
 const logDirectory = process.env.HOME + "/log/mock";
@@ -30,8 +29,8 @@ var log4jsconf = {
 };
 
 // dev模式时 日志同时打印到终端
-if (process.argv[2].includes("dev")){
-    log4jsconf.appenders.push({type:"console"})
+if (process.argv[2] && process.argv[2].includes("dev")) {
+    log4jsconf.appenders.push({type: "console"})
 }
 
 
