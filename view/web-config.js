@@ -1,5 +1,5 @@
-const API_ROOT = 'http://mock.yuantutech.com:3100';
-const MOCK_ROOT = 'http://mock.yuantutech.com:3100/mock/';
+const API_ROOT = 'http://fbi.yuantutech.com:3100';
+const MOCK_ROOT = 'http://fbi.yuantutech.com:3100/mock/';
 
 module.exports = {
     API_ROOT,
