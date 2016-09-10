@@ -7,6 +7,8 @@ import {combineReducers} from 'redux'
 // Updates an entity cache in response to any action with response.entities.
 function entities(state = {groups: {}, apis: {}}, action) {
     if (action.response && action.response.entities) {
+        action.response.entities.actionType = action.type;
+        action.response.entities.actionTime = new Date().getTime();
         return merge({}, state, action.response.entities)
     }
 

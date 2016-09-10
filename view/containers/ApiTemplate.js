@@ -20,6 +20,28 @@ class ApiTemplate extends Component {
         let apiName = this.props.form.getFieldValue("apiName");
         let apiPath = this.props.form.getFieldValue("apiPath");
         let template = this.props.form.getFieldValue("apiTemplate");
+
+        apiName = apiName ? apiName.trim() : apiName;
+        apiPath = apiPath ? apiPath.trim() : apiPath;
+
+        if (!apiPath || apiPath.length == 0) {
+            message.error("接口地址不能为空 ");
+            return
+        }
+
+        if (!apiName || apiName.length == 0) {
+            message.error("接口名称不能为空 ");
+            return
+        }
+
+        let hexCatch = apiPath.match(/(?:\/*)(\S*)/);
+        if (!hexCatch || hexCatch.length < 2 || hexCatch[1].length == 0) {
+            message.error("接口地址不正确");
+            return
+        } else {
+            apiPath = hexCatch[1]
+        }
+
         api.template = encodeURIComponent(template);
         api.name = apiName;
         api.path = apiPath;
@@ -59,7 +81,7 @@ class ApiTemplate extends Component {
         let {apiInfo, groupInfo} = this.props;
 
         let template = apiInfo.template || "";
-        const GROUP_ROOT = `${MOCK_ROOT}${groupInfo.groupPath}`;
+        const GROUP_ROOT = `${MOCK_ROOT}${groupInfo.groupPath}/`;
         try {
             template = JSON.stringify(JSON.parse(template), null, 4);
         } catch (e){
@@ -95,11 +117,11 @@ class ApiTemplate extends Component {
 
                     <FormItem >
                         <div style={{width:250}} className="ant-layout-center">
-                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
+                            <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
                             &nbsp;&nbsp;&nbsp;
                             <Button onClick={this.jsonFormat.bind(this)}>JSON格式化</Button>
                             &nbsp;&nbsp;&nbsp;
-                            <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
+                            <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
                         </div>
                     </FormItem>
 

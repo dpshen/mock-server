@@ -9,19 +9,11 @@ async function addApi(ctx, next) {
     let form = ctx.request.body || {},
         ret;
 
-    if (!(form && form.path && form.name && form.template && objectIdRegExp.test(form.groupId) )) {
+    if (!(form && form.path && form.name && objectIdRegExp.test(form.groupId) )) {
         // 检查参数
         ctx.result.set(100, "缺少参数");
         return
     }
-
-    // try {
-    //     JSON.parse(form.template)
-    // } catch (e) {
-    //     ctx.logger.error("==>", e);
-    //     ctx.result.set(101, "模版格式错误.");
-    //     return
-    // }
 
     // 检查是否已存在接口地址
     ret = await apiModel.getPathCount(form);
@@ -42,20 +34,9 @@ async function addApi(ctx, next) {
     ret = await apiModel.addApi(form);
     ctx.logger.trace("apiModel.addApi", ret);
 
-    // ret = await groupModel.getGroup({_id:form.groupId})
-    // ctx.result.setResult(ret);
     ctx.request.query._id = form.groupId;
     await groupCtrl.getGroup(ctx, next);
-    return ;
 
-    // let group = await groupModel.getGroup({_id:form.groupId});
-    //
-    // group = group.toObject();
-    // group.apiList = await apiModel.getApiList({groupId: group._id}, {template:1});
-    //
-    // ctx.result.setResult(group);
-    //
-    // await next();
 }
 
 async function updateApi(ctx, next) {
@@ -63,19 +44,11 @@ async function updateApi(ctx, next) {
         ret;
     ctx.logger.debug(ctx.request)
 
-    if (!(form && form.path && form.name && form.template && objectIdRegExp.test(form._id) )) {
+    if (!(form && form.path && form.name && objectIdRegExp.test(form._id) )) {
         // 检查参数
         ctx.result.set(100, "缺少参数");
         return
     }
-
-    // try {
-    //     JSON.parse(form.template)
-    // } catch (e) {
-    //     ctx.logger.error("==>", e);
-    //     ctx.result.set(101, "模版格式错误.");
-    //     return
-    // }
 
     // 检查是否已存在接口地址
     let api = await apiModel.getApi(form);
@@ -105,16 +78,12 @@ async function updateApi(ctx, next) {
     ctx.logger.trace("apiModel.updateApi", ret);
 
     if (ret.ok){
-        // 返回最新接口
-        // ret = await apiModel.getApi({_id:form._id})
-        // ret = await groupModel.getGroup({_id:form.groupId})
         ctx.request.query._id = form.groupId;
         await groupCtrl.getGroup(ctx, next);
-        return ;
+    } else {
+        ctx.result.setResult(ret);
+        await next();
     }
-    // ctx.result.setResult(ret);
-
-    await next();
 }
 
 async function getApiList(ctx, next) {
@@ -148,11 +117,7 @@ async function getApi(ctx, next) {
         return null;
     }
 
-
     api = api.toObject();
-    // let template = JSON.parse(api.template || "{}");
-    // api.mockData = Mock.mock(template);
-
     ctx.result.setResult(api);
 
     await next();

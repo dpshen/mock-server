@@ -24,6 +24,9 @@ function getGroup({_id}) {
     return groupModel.findOne({_id})
 }
 
+function getGroupByPath(groupPath) {
+    return groupModel.findOne({groupPath})
+}
 function getGroupList() {
     return groupModel.find({}, listView)
 }
@@ -62,6 +65,7 @@ function updateGroup({_id, groupPath, groupName}) {
 
 module.exports = {
     getGroup,
+    getGroupByPath,
     getGroupList,
     getPathCount,
     getNameCount,

@@ -31,7 +31,9 @@ class GroupList extends Component {
             key: 'operation',
             render: (text, record) => (
                 <span>
-                    <a onClick={this.editGroup.bind(this, record)}>修改</a>
+                    <a onClick={this.editGroup.bind(this, record)}>修改项目</a>
+                    <span className="ant-divider"/>
+                    <a onClick={this.toAddApi.bind(this, record)}>新增接口</a>
                 </span>
             ),
         }];
@@ -44,7 +46,7 @@ class GroupList extends Component {
         }
     }
 
-    toGroup(record){
+    toGroup(record) {
         this.props.history.replace(`/${record._id}`);
     }
 
@@ -65,6 +67,12 @@ class GroupList extends Component {
         });
     }
 
+    toAddApi(group, e){
+        e.preventDefault();
+        e.stopPropagation();
+        this.props.history.replace(`/${group._id}/addApi`);
+    }
+
     hideGroupModal() {
         this.setState({
             showAddGroup: false,
@@ -75,7 +83,23 @@ class GroupList extends Component {
     handleSubmit() {
         let groupName = this.props.form.getFieldValue("groupName");
         let groupPath = this.props.form.getFieldValue("groupPath");
-        groupPath = groupPath.trim();
+        groupName = groupName ? groupName.trim() : groupName;
+        groupPath = groupPath ? groupPath.trim() : groupPath;
+        if (/\//.test(groupPath)) {
+            message.error("项目地址不能包含 / ");
+            return
+        }
+
+        if (!groupPath || groupPath.length == 0) {
+            message.error("项目地址不能为空 ");
+            return
+        }
+
+        if (!groupName || groupName.length == 0) {
+            message.error("项目名称不能为空 ");
+            return
+        }
+
         let group = {groupName, groupPath};
         let selectGroup = this.state.selectGroup;
         if (selectGroup._id) {
@@ -103,8 +127,8 @@ class GroupList extends Component {
 
         const groupNameProps = getFieldProps("groupName", {
             initialValue: groupName,
-            rules :[
-                { required: true, type:"string", pattern: /^[a-z]+$/ }
+            rules: [
+                {required: true, type: "string", pattern: /^[a-z]+$/}
             ]
         })
 
@@ -124,7 +148,7 @@ class GroupList extends Component {
                     </Form.Item>
 
                     <Form.Item label="项目地址" {...formItemLayout}>
-                        <Input {...getFieldProps("groupPath", {initialValue: groupPath})} addonBefore={MOCK_ROOT} />
+                        <Input {...getFieldProps("groupPath", {initialValue: groupPath})} addonBefore={MOCK_ROOT}/>
                     </Form.Item>
                 </Form>
 

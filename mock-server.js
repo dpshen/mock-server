@@ -8,7 +8,7 @@ console.log(`Open http://mock.yuantutech.com`)
 
 // react...
 
-if (process.argv.length > 2 && process.argv[2].indexOf('dev') != -1){
+if (process.argv.length > 2 && process.argv[2] == 'dev'){
     process.env.NODE_ENV = "dev";
 
     var webpack = require("webpack")

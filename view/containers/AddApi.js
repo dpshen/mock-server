@@ -1,42 +1,15 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
-import {Button, message, Form, Input } from 'antd';
+import {Button, message, Form, Input} from 'antd';
 const FormItem = Form.Item;
 
-import {addApi, ADD_API_FAILURE} from '../actions'
+import {addApi, ADD_API_FAILURE, ADD_API_SUCCESS} from '../actions'
+import {MOCK_ROOT} from '../web-config'
 
 class AddApi extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            apiList: [
-                {
-                    "_id": "57b42a8a84fc0b74151e6e23",
-                    "path": "/test/api/getNum",
-                    "name": "getNum"
-                }
-            ]
-        };
-
-        this.columns = [{
-            title: '接口',
-            dataIndex: 'name',
-        }, {
-            title: '路径',
-            dataIndex: 'path',
-        }, {
-            title: '操作',
-            key: 'operation',
-            render: (text, record) => (
-                <span>
-                    <Link to={`${record._id}/mockData`}>查看Mock数据</Link>
-                    <span className="ant-divider"/>
-                    <Link to={`${record._id}/Template`}>修改Mock规则</Link>
-                </span>
-            ),
-        }];
 
     }
 
@@ -44,13 +17,41 @@ class AddApi extends Component {
         if (newProps.error.type === ADD_API_FAILURE && newProps.error.message !== this.props.error.message) {
             message.error(newProps.error.message)
         }
+
+        if (newProps.actionType === ADD_API_SUCCESS && newProps.actionTime + 1000 > new Date().getTime()){
+            message.success("接口已保存")
+        }
+
     }
+
     handleSubmit() {
         const groupId = this.props.groupId;
         let newApi = {groupId};
         let apiName = this.props.form.getFieldValue("apiName");
         let apiPath = this.props.form.getFieldValue("apiPath");
         let template = this.props.form.getFieldValue("apiTemplate") || "";
+
+        apiName = apiName ? apiName.trim() : apiName;
+        apiPath = apiPath ? apiPath.trim() : apiPath;
+
+        if (!apiName || apiName.length == 0) {
+            message.error("接口名称不能为空 ");
+            return
+        }
+
+        if (!apiPath || apiPath.length == 0) {
+            message.error("接口地址不能为空 ");
+            return
+        }
+
+        let hexCatch = apiPath.match(/(?:\/*)(\S*)/);
+        if (!hexCatch || hexCatch.length < 2 || hexCatch[1].length == 0) {
+            message.error("接口地址不正确");
+            return
+        } else {
+            apiPath = hexCatch[1]
+        }
+
         newApi.name = apiName;
         newApi.path = apiPath;
         try {
@@ -64,7 +65,20 @@ class AddApi extends Component {
     }
 
     handleCancel() {
-        this.props.history.go(-1)
+        // this.props.history.go(-1)
+        this.props.history.replace(`/${this.props.groupId}/apiList`)
+    }
+
+    jsonFormat(){
+        let template = this.props.form.getFieldValue("apiTemplate");
+        try {
+            template = JSON.stringify(JSON.parse(template), null, 4);
+            this.props.form.setFieldsValue({"apiTemplate": template});
+            message.success('JSON格式化成功')
+        } catch (e){
+            message.error(`模版格式错误:${e.message}`);
+        }
+
     }
 
     render() {
@@ -74,6 +88,7 @@ class AddApi extends Component {
             labelCol: {span: 4},
             wrapperCol: {span: 16},
         };
+        const GROUP_ROOT = `${MOCK_ROOT}${this.props.groupInfo.groupPath}/`;
 
         let required = true;
 
@@ -94,7 +109,7 @@ class AddApi extends Component {
                         label="接口地址"
                         {...formItemLayout}
                     >
-                        <Input {...getFieldProps("apiPath", {required})} addonBefore="Http://"/>
+                        <Input {...getFieldProps("apiPath", {required})} addonBefore={GROUP_ROOT}/>
                     </FormItem>
                     <FormItem
                         label="Mock模版"
@@ -106,6 +121,8 @@ class AddApi extends Component {
                     <FormItem >
                         <div className="ant-layout-center">
                             <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button onClick={this.jsonFormat.bind(this)}>JSON格式化</Button>
                             &nbsp;&nbsp;&nbsp;
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
                         </div>
@@ -127,11 +144,21 @@ function mapStateToProps(state, ownProps) {
 
     let groupId = ownProps.params.group;
     const {
+        entities: {
+            groups,
+            actionType,
+            actionTime
+        },
         error
     } = state;
 
+    let groupInfo = groups[groupId] || {};
+
     return {
+        actionType,
+        actionTime,
         groupId,
+        groupInfo,
         error
     }
 }

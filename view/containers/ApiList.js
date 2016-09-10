@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
-import {Table, Button, Form, Modal, message, Input} from 'antd';
+import {Table, Button, Form, Modal, message, Input, Icon} from 'antd';
 import Mock from 'mockjs';
 
 import {fetchApiList} from '../actions'
+import {MOCK_ROOT} from '../web-config'
 
 const FormItem = Form.Item;
 
@@ -29,7 +30,7 @@ class ApiList extends Component {
                 <span>
                     <a onClick={this.showMockData.bind(this, record)}>Mock数据</a>
                     <span className="ant-divider"/>
-                    <Link to={`./${record._id}/template`}>修改</Link>
+                    <Link to={`/${this.props.groupId}/${record._id}/template`}>修改</Link>
                 </span>
             ),
         }];
@@ -57,7 +58,7 @@ class ApiList extends Component {
 
     render() {
         let {showMockData, apiInfo} = this.state;
-        const {apiList} = this.props;
+        const {apiList, groupInfo} = this.props;
         return <div>
             <div className="ant-layout-header">
                 <h1 style={{marginLeft: 20}}>{"接口"}</h1>
@@ -66,7 +67,8 @@ class ApiList extends Component {
             <div className="ant-layout-container">
                 <Table columns={this.columns} dataSource={apiList}/>
             </div>
-            <ApiInfo visible={showMockData} apiInfo={apiInfo} hideMockData={this.hideMockData.bind(this)}/>
+            <ApiInfo visible={showMockData} apiInfo={apiInfo} groupInfo={groupInfo}
+                     hideMockData={this.hideMockData.bind(this)}/>
         </div>
     }
 }
@@ -99,14 +101,22 @@ class ApiInfo extends Component {
         }
     }
 
+    copyApiPath(){
+        const {groupInfo, apiInfo} = this.props;
+        let Path = `${MOCK_ROOT}${groupInfo.groupPath}/${apiInfo.path}`;
+        window.clipboardData.setData("text", Path);
+        message.success(`已复制地址:${Path}`)
+    }
+
     render() {
         const {getFieldProps} = this.props.form;
-        const {visible, hideMockData} = this.props;
+        const {visible, hideMockData, groupInfo} = this.props;
         let apiInfo = this.props.apiInfo;
         const formItemLayout = {
             labelCol: {span: 4},
             wrapperCol: {span: 16},
         };
+        const GROUP_ROOT = `${MOCK_ROOT}${groupInfo.groupPath}/`;
 
         if (!apiInfo) {
             return null;
@@ -114,28 +124,19 @@ class ApiInfo extends Component {
 
         return (
 
-            <Modal title="" visible={visible} onOk={this.generateMockData.bind(this)} okText={"重新生成"} cancelText={"关闭"}
+            <Modal title="" visible={visible} width={700} onOk={this.generateMockData.bind(this)} okText={"重新生成"} cancelText={"关闭"}
                    onCancel={hideMockData}>
                 <Form horizontal>
-                    <FormItem
-                        label="接口名称"
-                        {...formItemLayout}
-                    >
+                    <FormItem label="接口名称" {...formItemLayout} >
                         <Input {...getFieldProps("apiName", {initialValue: apiInfo.name})} disabled={true}
                                placeholder="接口的名称(仅用于标识接口)"/>
                     </FormItem>
 
-                    <FormItem
-                        label="接口地址"
-                        {...formItemLayout}
-                    >
-                        <Input {...getFieldProps("apiPath", {initialValue: apiInfo.path})} addonBefore="Http://"
-                               disabled={true}/>
+                    <FormItem label="接口地址" {...formItemLayout} >
+                        <Input {...getFieldProps("apiPath", {initialValue: `${GROUP_ROOT}${apiInfo.path}`})}
+                               disabled={true} />
                     </FormItem>
-                    <FormItem
-                        label="Mock数据"
-                        {...formItemLayout}
-                    >
+                    <FormItem label="Mock数据" {...formItemLayout}>
                         <Input type="textarea" {...getFieldProps("mockData", {initialValue: this.state.mockData})}
                                rows="20"/>
                     </FormItem>
@@ -167,7 +168,8 @@ function mapStateToProps(state, ownProps) {
 
     return {
         apiList,
-        groupId
+        groupId,
+        groupInfo: group || {}
     }
 }
 

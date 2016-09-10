@@ -77,8 +77,8 @@ function updateApi({_id, path, name, template}) {
 }
 
 // 更新接口地址
-function queryApiByPath(path) {
-    return apiModel.find({path},detailView)
+function queryApiByPath(filter) {
+    return apiModel.find(filter)
 }
 
 module.exports = {

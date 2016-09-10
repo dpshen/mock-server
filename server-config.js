@@ -30,7 +30,7 @@ var log4jsconf = {
 };
 
 // dev模式时 日志同时打印到终端
-if (process.argv[2] == "dev"){
+if (process.argv[2].includes("dev")){
     log4jsconf.appenders.push({type:"console"})
 }
 
