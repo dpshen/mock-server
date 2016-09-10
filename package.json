@@ -7,7 +7,8 @@
     "clean": "rm -rf ./view/build",
     "start": "node mock-server.js dev",
     "dev": "npm run clean && cross-env NODE_ENV=dev webpack",
-    "daily": "npm run clean && cross-env NODE_ENV=daily webpack"
+    "daily": "npm run clean && cross-env NODE_ENV=daily webpack",
+    "dist": "npm run clean && cross-env NODE_ENV=dist webpack"
   },
   "keywords": [
     "mock"
