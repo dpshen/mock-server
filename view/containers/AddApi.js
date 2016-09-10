@@ -20,6 +20,7 @@ class AddApi extends Component {
 
         if (newProps.actionType === ADD_API_SUCCESS && newProps.actionTime + 1000 > new Date().getTime()){
             message.success("接口已保存")
+            this.props.history.replace(`/${this.props.groupId}/apiList`)
         }
 
     }

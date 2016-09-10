@@ -101,11 +101,15 @@ class ApiInfo extends Component {
         }
     }
 
-    copyApiPath(){
-        const {groupInfo, apiInfo} = this.props;
-        let Path = `${MOCK_ROOT}${groupInfo.groupPath}/${apiInfo.path}`;
-        window.clipboardData.setData("text", Path);
-        message.success(`已复制地址:${Path}`)
+    copyApiPath() {
+        // const {groupInfo, apiInfo} = this.props;
+        // let path = `${MOCK_ROOT}${groupInfo.groupPath}/${apiInfo.path}`;
+
+        let text = document.getElementById("apiPath");
+        console.log(text);
+        text.select();
+        document.execCommand("Copy");
+
     }
 
     render() {
@@ -124,7 +128,8 @@ class ApiInfo extends Component {
 
         return (
 
-            <Modal title="" visible={visible} width={700} onOk={this.generateMockData.bind(this)} okText={"重新生成"} cancelText={"关闭"}
+            <Modal title="" visible={visible} width={700} onOk={this.generateMockData.bind(this)} okText={"重新生成"}
+                   cancelText={"关闭"}
                    onCancel={hideMockData}>
                 <Form horizontal>
                     <FormItem label="接口名称" {...formItemLayout} >
@@ -134,7 +139,7 @@ class ApiInfo extends Component {
 
                     <FormItem label="接口地址" {...formItemLayout} >
                         <Input {...getFieldProps("apiPath", {initialValue: `${GROUP_ROOT}${apiInfo.path}`})}
-                               disabled={true} />
+                               addonAfter={<Button onClick={this.copyApiPath.bind(this)} icon="copy" size="small"/>}/>
                     </FormItem>
                     <FormItem label="Mock数据" {...formItemLayout}>
                         <Input type="textarea" {...getFieldProps("mockData", {initialValue: this.state.mockData})}
