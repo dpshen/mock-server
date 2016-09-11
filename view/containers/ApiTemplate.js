@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router'
 import {Breadcrumb, Table, Button, Modal, message, Form, Select, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-import {MOCK_ROOT} from '../web-config'
+import {MOCK_ROOT} from '../libs/web-config'
 
 import {fetchApi, updateApi} from '../actions'
 
@@ -55,7 +55,8 @@ class ApiTemplate extends Component {
     }
 
     handleCancel() {
-        this.props.history.go(-1)
+        // this.props.history.go(-1)
+        this.props.history.replace(`/${this.props.groupId}/apiList`)
     }
 
     jsonFormat(){

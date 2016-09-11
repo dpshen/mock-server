@@ -14,7 +14,7 @@ if (environment.indexOf("demo") != -1){
 	rootPath = "./src/demo";
 }
 //发布文件目录
-var distPath = "./view/build";
+var distPath = "./build";
 
 //cdn
 var daily_publicPath = "http://daily.yuantutech.com";
@@ -27,8 +27,8 @@ var dev_environment = environment.indexOf("dev"); // 本地开发环境 webpack 
 var daily_environment = environment.indexOf("daily"); // daily环境 webpack daily
 var dist_environment = environment.indexOf("dist"); // 生产环境 webpack dist
 
-// var publicPath = daily_environment != -1 ? daily_publicPath : (dist_environment != -1 ? dist_publicPath : dev_publicPath);
-var publicPath = dev_publicPath;
+var publicPath = daily_environment != -1 ? daily_publicPath : (dist_environment != -1 ? dist_publicPath : dev_publicPath);
+// var publicPath = dev_publicPath;
 
 var extractLESS = new ExtractTextPlugin('[name].css');
 
@@ -112,7 +112,6 @@ var config = {
 Object.keys(config.entry).map(function(key){
 
 	if( fs.existsSync( path.resolve(rootPath, `${key}.html`) )){
-		console.log(`ADD entry ${key}.html`);
 		config.plugins.push(
 			new HtmlWebpackPlugin({
 				chunks:[key],

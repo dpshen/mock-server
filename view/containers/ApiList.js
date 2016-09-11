@@ -5,7 +5,7 @@ import {Table, Button, Form, Modal, message, Input, Icon} from 'antd';
 import Mock from 'mockjs';
 
 import {fetchApiList} from '../actions'
-import {MOCK_ROOT} from '../web-config'
+import {MOCK_ROOT} from '../libs/web-config'
 
 const FormItem = Form.Item;
 

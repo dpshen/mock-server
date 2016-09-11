@@ -5,7 +5,7 @@ import {Button, message, Form, Input} from 'antd';
 const FormItem = Form.Item;
 
 import {addApi, ADD_API_FAILURE, ADD_API_SUCCESS} from '../actions'
-import {MOCK_ROOT} from '../web-config'
+import {MOCK_ROOT} from '../libs/web-config'
 
 class AddApi extends Component {
     constructor(props) {

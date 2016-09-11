@@ -49,7 +49,7 @@ app.use(router.routes());
 //     index: "index.html"
 // }));
 
-app.use(staticServer("./view/build",{
+app.use(staticServer("./build",{
     index: "index.html"
 }));
 

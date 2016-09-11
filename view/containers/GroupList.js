@@ -4,7 +4,7 @@ import {Router, Route, Link, browserHistory} from 'react-router'
 import {Breadcrumb, Table, Button, Form, Modal, message, Select, Input, Icon} from 'antd';
 
 import {fetchGroupList, addGroup, updateGroup, ADD_GROUP_FAILURE, UPDATE_GROUP_FAILURE} from '../actions'
-import {MOCK_ROOT} from '../web-config'
+import {MOCK_ROOT} from '../libs/web-config'
 
 class GroupList extends Component {
     constructor(props) {
