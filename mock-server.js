@@ -4,7 +4,7 @@ require("babel-polyfill");
 const app = require('./app');
 
 app.listen(3100);
-console.log(`Open http://mock.yuantutech.com`)
+console.log(`Open http://fbi.yuantutech.com:3100`)
 
 // react...
 
