@@ -17,7 +17,9 @@ const groupModel = db.model('group', groupSchema);
 const listView = {
     _id:1,
     groupName:1,
-    groupPath:1
+    groupPath:1,
+    createTime:1,
+    modifyTime:1
 };
 
 function getGroup({_id}) {
@@ -28,7 +30,7 @@ function getGroupByPath(groupPath) {
     return groupModel.findOne({groupPath})
 }
 function getGroupList() {
-    return groupModel.find({}, listView)
+    return groupModel.find({})
 }
 
 // 查询组内path数量

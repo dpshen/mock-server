@@ -11,7 +11,6 @@ import GroupList from './containers/GroupList'
 import ApiList from './containers/ApiList'
 import AddApi from './containers/AddApi'
 import ApiTemplate from './containers/ApiTemplate'
-import ApiMockData from './containers/ApiMockData'
 
 import 'antd/dist/antd.less'
 import './css/common.less'
@@ -43,7 +42,6 @@ export default class App extends React.Component {
                             <Route path=":api" >
                                 <IndexRedirect to="template"/>
                                 <Route path="template" component={ApiTemplate}/>
-                                <Route path="mockData" component={ApiMockData}/>
                             </Route>
                         </Route>
                     </Route>

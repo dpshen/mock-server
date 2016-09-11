@@ -5,6 +5,7 @@ import {Breadcrumb, Table, Button, Form, Modal, message, Select, Input, Icon} fr
 
 import {fetchGroupList, addGroup, updateGroup, ADD_GROUP_FAILURE, UPDATE_GROUP_FAILURE} from '../actions'
 import {MOCK_ROOT} from '../libs/web-config'
+import util from '../libs/util'
 
 class GroupList extends Component {
     constructor(props) {
@@ -26,6 +27,18 @@ class GroupList extends Component {
             title: '接口数量',
             dataIndex: 'apiList',
             render: (text) => <span>{text.length}</span>
+        }, {
+            title: "创建时间",
+            dataIndex: "createTime",
+            render: (createTime) => {
+                if (createTime) {
+                    return (
+                        <span>{util.dateFormat(createTime)}</span>
+                    )
+                } else {
+                    return null
+                }
+            }
         }, {
             title: '操作',
             key: 'operation',
@@ -67,7 +80,7 @@ class GroupList extends Component {
         });
     }
 
-    toAddApi(group, e){
+    toAddApi(group, e) {
         e.preventDefault();
         e.stopPropagation();
         this.props.history.replace(`/${group._id}/addApi`);

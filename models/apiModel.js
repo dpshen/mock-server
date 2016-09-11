@@ -40,7 +40,7 @@ const detailView = {
 
 // 获取组内api列表
 function getApiList({groupId}, assignParams) {
-    return apiModel.find({groupId}, Object.assign(listView, assignParams));
+    return apiModel.find({groupId}, Object.assign(detailView, assignParams));
 }
 
 // 查询组内path数量
@@ -62,6 +62,7 @@ function addApi({name, path, groupId, template}) {
     api.groupId = Types.ObjectId(groupId);
     api.template = template;
     api.createTime = new Date();
+    api.modifyTime = new Date();
     return api.save()
 }
 

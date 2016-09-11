@@ -1,16 +1,19 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
-import {Button, message, Form, Input} from 'antd';
+import {Button, message, Form, Input, Row, Col, Tooltip} from 'antd';
 const FormItem = Form.Item;
 
 import {addApi, ADD_API_FAILURE, ADD_API_SUCCESS} from '../actions'
 import {MOCK_ROOT} from '../libs/web-config'
+import MockDataModal from '../components/MockDataModal'
 
 class AddApi extends Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            showMockData: false
+        }
     }
 
     componentWillReceiveProps(newProps) {
@@ -75,11 +78,29 @@ class AddApi extends Component {
         try {
             template = JSON.stringify(JSON.parse(template), null, 4);
             this.props.form.setFieldsValue({"apiTemplate": template});
-            message.success('JSON格式化成功')
         } catch (e){
-            message.error(`模版格式错误:${e.message}`);
+            message.info(`非JSON格式数据或则JSON格式错误`);
         }
 
+    }
+
+    openMockjs(){
+        window.open("http://mockjs.com/examples.html")
+    }
+
+    showMockData(){
+        let template = this.props.form.getFieldValue("apiTemplate") || "";
+        this.jsonFormat();
+        this.setState({
+            showMockData : true,
+            template
+        })
+    }
+
+    hideMockData(){
+        this.setState({
+            showMockData : false
+        })
     }
 
     render() {
@@ -87,16 +108,26 @@ class AddApi extends Component {
         const {getFieldProps} = this.props.form;
         const formItemLayout = {
             labelCol: {span: 4},
-            wrapperCol: {span: 16},
+            wrapperCol: {span: 18},
         };
         const GROUP_ROOT = `${MOCK_ROOT}${this.props.groupInfo.groupPath}/`;
 
         let required = true;
+        let {showMockData,template} = this.state;
+        let hideMockData = this.hideMockData.bind(this);
 
         return <div>
-            <div className="ant-layout-header">
-                <h1 style={{marginLeft: 20}}>{"创建接口"}</h1>
-            </div>
+            <Row className="ant-layout-header" type="flex" justify="space-between">
+                <Col span={10}>
+                    <h1 style={{marginLeft: 20}}>{"创建接口"}</h1>
+                </Col>
+                <Col span={2}>
+                    <Tooltip title="点击打开模版示例">
+                        <Button icon="question-circle" size="small" shape="circle" type="dashed"
+                                onClick={this.openMockjs.bind(this)}/>
+                    </Tooltip>
+                </Col>
+            </Row>
             <div className="ant-layout-container">
                 <Form horizontal>
                     <FormItem
@@ -123,13 +154,14 @@ class AddApi extends Component {
                         <div className="ant-layout-center">
                             <Button type="primary" onClick={this.handleSubmit.bind(this)}>确定</Button>
                             &nbsp;&nbsp;&nbsp;
-                            <Button onClick={this.jsonFormat.bind(this)}>JSON格式化</Button>
+                            <Button onClick={this.showMockData.bind(this)}>模拟</Button>
                             &nbsp;&nbsp;&nbsp;
                             <Button type="ghost" onClick={this.handleCancel.bind(this)}>返回</Button>
                         </div>
                     </FormItem>
 
                 </Form>
+                <MockDataModal visible={showMockData} template={template} hideMockData={hideMockData} />
             </div>
         </div>
     }

@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
-import {Table, Button, Form, Modal, message, Input, Icon} from 'antd';
+import {Table, Button, Form, Modal, message, Input, Icon, Tooltip} from 'antd';
 import Mock from 'mockjs';
+import util from '../libs/util'
 
 import {fetchApiList} from '../actions'
 import {MOCK_ROOT} from '../libs/web-config'
@@ -23,6 +24,30 @@ class ApiList extends Component {
         }, {
             title: '路径',
             dataIndex: 'path',
+        }, {
+            title: "创建时间",
+            dataIndex: "createTime",
+            render: (createTime) => {
+                if (createTime) {
+                    return (
+                        <span>{util.dateFormat(createTime)}</span>
+                    )
+                } else {
+                    return null
+                }
+            }
+        }, {
+            title: "最近修改时间",
+            dataIndex: "modifyTime",
+            render: (modifyTime) => {
+                if (modifyTime) {
+                    return (
+                        <span>{util.dateFormat(modifyTime)}</span>
+                    )
+                } else {
+                    return null
+                }
+            }
         }, {
             title: '操作',
             key: 'operation',
@@ -65,7 +90,7 @@ class ApiList extends Component {
                 <Link to={`/${this.props.groupId}/addApi`} className="m-l-10 ant-btn-primary ant-btn-lg">创建接口</Link>
             </div>
             <div className="ant-layout-container">
-                <Table columns={this.columns} dataSource={apiList}/>
+                <Table columns={this.columns} dataSource={apiList} onRowClick={this.showMockData.bind(this)}/>
             </div>
             <ApiInfo visible={showMockData} apiInfo={apiInfo} groupInfo={groupInfo}
                      hideMockData={this.hideMockData.bind(this)}/>
@@ -139,7 +164,9 @@ class ApiInfo extends Component {
 
                     <FormItem label="接口地址" {...formItemLayout} >
                         <Input {...getFieldProps("apiPath", {initialValue: `${GROUP_ROOT}${apiInfo.path}`})}
-                               addonAfter={<Button onClick={this.copyApiPath.bind(this)} icon="copy" size="small"/>}/>
+                               addonAfter={<Tooltip title="点击复制接口地址">
+                                   <Button onClick={this.copyApiPath.bind(this)} icon="copy" size="small"/>
+                               </Tooltip>}/>
                     </FormItem>
                     <FormItem label="Mock数据" {...formItemLayout}>
                         <Input type="textarea" {...getFieldProps("mockData", {initialValue: this.state.mockData})}

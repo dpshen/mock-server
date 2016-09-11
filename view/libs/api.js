@@ -40,7 +40,6 @@ function callApi(endpoint, schema, options) {
                 normalize(json.data, schema),
                 {nextPageUrl}
             );
-            console.log(fullUrl, "==>", rst)
             return rst
         })
 }
