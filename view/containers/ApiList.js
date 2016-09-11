@@ -131,7 +131,6 @@ class ApiInfo extends Component {
         // let path = `${MOCK_ROOT}${groupInfo.groupPath}/${apiInfo.path}`;
 
         let text = document.getElementById("apiPath");
-        console.log(text);
         text.select();
         document.execCommand("Copy");
 
