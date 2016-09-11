@@ -8,6 +8,8 @@ import {addApi, ADD_API_FAILURE, ADD_API_SUCCESS} from '../actions'
 import {MOCK_ROOT} from '../libs/web-config'
 import MockDataModal from '../components/MockDataModal'
 
+const pathReg = new RegExp(/\/*([^?#]*)/);
+
 class AddApi extends Component {
     constructor(props) {
         super(props);
@@ -37,6 +39,10 @@ class AddApi extends Component {
 
         apiName = apiName ? apiName.trim() : apiName;
         apiPath = apiPath ? apiPath.trim() : apiPath;
+
+        if(pathReg.test(apiPath)){
+            apiPath = apiPath.match(pathReg)[1]
+        }
 
         if (!apiName || apiName.length == 0) {
             message.error("接口名称不能为空 ");

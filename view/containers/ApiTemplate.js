@@ -6,6 +6,7 @@ const FormItem = Form.Item;
 import {MOCK_ROOT} from '../libs/web-config'
 import MockDataModal from '../components/MockDataModal'
 
+const pathReg = new RegExp(/\/*([^?#]*)/);
 import {fetchApi, updateApi, UPDATE_API_FAILURE, UPDATE_API_SUCCESS} from '../actions'
 
 class ApiTemplate extends Component {
@@ -36,6 +37,10 @@ class ApiTemplate extends Component {
 
         apiName = apiName ? apiName.trim() : apiName;
         apiPath = apiPath ? apiPath.trim() : apiPath;
+
+        if(pathReg.test(apiPath)){
+            apiPath = apiPath.match(pathReg)[1]
+        }
 
         if (!apiPath || apiPath.length == 0) {
             message.error("接口地址不能为空 ");
