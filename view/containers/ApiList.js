@@ -55,6 +55,8 @@ class ApiList extends Component {
                 <span>
                     <a onClick={this.showMockData.bind(this, record)}>Mock数据</a>
                     <span className="ant-divider"/>
+                    <a href={`/mock/${this.props.groupInfo.groupPath}/${record.path}`} target="_blank">访问接口</a>
+                    <span className="ant-divider"/>
                     <Link to={`/${this.props.groupId}/${record._id}/template`}>修改</Link>
                 </span>
             ),

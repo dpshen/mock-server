@@ -19,6 +19,7 @@ export default class MockDataModal extends Component {
         let mockData = "";
         if (template && visible) {
             try {
+                template = template.replace(/(\s*?{\s*?|\s*?,\s*?)(['"])?([a-zA-Z0-9]+)(['"])?:/g, '$1"$3":');
                 template = JSON.parse(template);
                 mockData = JSON.stringify(Mock.mock(template), null, 4);
             } catch (e) {

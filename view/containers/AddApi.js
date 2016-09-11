@@ -65,6 +65,7 @@ class AddApi extends Component {
         newApi.name = apiName;
         newApi.path = apiPath;
         try {
+            template = template.replace(/(\s*?{\s*?|\s*?,\s*?)(['"])?([a-zA-Z0-9]+)(['"])?:/g, '$1"$3":');
             newApi.template = encodeURIComponent(JSON.stringify(JSON.parse(template)));
         } catch (e) {
             newApi.template = encodeURIComponent(template);
@@ -82,6 +83,7 @@ class AddApi extends Component {
     jsonFormat(){
         let template = this.props.form.getFieldValue("apiTemplate");
         try {
+            template = template.replace(/(\s*?{\s*?|\s*?,\s*?)(['"])?([a-zA-Z0-9]+)(['"])?:/g, '$1"$3":');
             template = JSON.stringify(JSON.parse(template), null, 4);
             this.props.form.setFieldsValue({"apiTemplate": template});
         } catch (e){
