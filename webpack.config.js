@@ -17,8 +17,8 @@ if (environment.indexOf("demo") != -1){
 var distPath = "./build";
 
 //cdn
-var daily_publicPath = "http://daily.yuantutech.com";
-var dist_publicPath = "http://s.yuantutech.com";
+var daily_publicPath = "http://daily.yuantutech.com/yuantu/mock-server";
+var dist_publicPath = "http://s.yuantutech.com/yuantu/mock-server";
 //本地开发环境通常不需要配置
 // var dev_publicPath = null;
 var dev_publicPath = "/";
