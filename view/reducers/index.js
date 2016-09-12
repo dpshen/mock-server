@@ -1,6 +1,6 @@
 import * as ActionTypes from '../actions'
 import merge from 'lodash/merge'
-import paginate from './paginate'
+// import paginate from './paginate'
 import {routerReducer as routing} from 'react-router-redux'
 import {combineReducers} from 'redux'
 
@@ -27,28 +27,28 @@ function error(state = null, action) {
 }
 
 // Updates the pagination data for different actions.
-const pagination = combineReducers({
-    groupById: paginate({
-        mapActionToKey: action => action._id,
-        types: [
-            ActionTypes.GET_GROUP,
-            ActionTypes.GET_GROUP_SUCCESS,
-            ActionTypes.GET_GROUP_FAILURE
-        ]
-    }),
-    apiById: paginate({
-        mapActionToKey: action => action._id,
-        types: [
-            ActionTypes.GET_API,
-            ActionTypes.GET_API_SUCCESS,
-            ActionTypes.GET_API_FAILURE
-        ]
-    })
-})
+// const pagination = combineReducers({
+//     groupById: paginate({
+//         mapActionToKey: action => action._id,
+//         types: [
+//             ActionTypes.GET_GROUP,
+//             ActionTypes.GET_GROUP_SUCCESS,
+//             ActionTypes.GET_GROUP_FAILURE
+//         ]
+//     }),
+//     apiById: paginate({
+//         mapActionToKey: action => action._id,
+//         types: [
+//             ActionTypes.GET_API,
+//             ActionTypes.GET_API_SUCCESS,
+//             ActionTypes.GET_API_FAILURE
+//         ]
+//     })
+// })
 
 const rootReducer = combineReducers({
     entities,
-    pagination,
+    // pagination,
     error,
     routing
 })

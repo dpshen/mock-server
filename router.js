@@ -14,6 +14,6 @@ router.post('/updateGroup', updateGroup);
 router.get('/getGroup', getGroup);
 router.get('/getGroupList', getGroupList);
 
-router.get('/mock/**', mock);
+router.all('/mock/**', mock);
 
 module.exports = router;
